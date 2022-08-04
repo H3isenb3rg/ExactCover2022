@@ -17,14 +17,40 @@ def parse_config():
     with open(path, "r") as config_file:
         config_str = config_file.read()
 
-    base = int(re.findall(base_re, config_str)[0])
-    rate = float(re.findall(rate_re, config_str)[0])
+    base = read_base(config_str)
+    rate = read_rate(config_str)
     
     return base, rate
+
+
+def read_base(cfg_str):
+    finds = re.findall(base_re, cfg_str)
+    if len(finds)==0:
+        raise Exception("Error while reading paramenter base.")
+
+    base = int(finds[0])
+    if base < 2 or base > 30:
+        raise Exception("'Base' parameter boundaries exceeded. Base must be greater than 1 and at most 30")
+    
+    return base
+
+
+def read_rate(cfg_str):
+    finds = re.findall(rate_re, cfg_str)
+    if len(finds)==0:
+        raise Exception("Error while reading paramenter rate.")
+    
+    rate = float(finds[0])
+    if rate <= 0 or rate >= 1:
+        raise Exception("'Rate' parameter boundaries exceeded. Rate must be a decimal between than 0 and 1 (0 and 1 excluded)")
+
+    return rate
+
 
 def print_parameters():
     base, rate = parse_config()
     print(f"Base = {base} Rate = {rate}")
+
 
 if __name__ == "__main__":
     print_parameters()

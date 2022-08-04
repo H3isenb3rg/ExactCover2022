@@ -24,7 +24,7 @@ class Sudoku:
         if self.base*self.base > 36:
             out = ""
             for line in board: 
-                out += ";;; " + line + "\n"
+                out += ";;; " + str(line) + "\n"
         else:
             out = pretty_str(self.base, board)
         
