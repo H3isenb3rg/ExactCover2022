@@ -32,6 +32,16 @@ def read_base(cfg_str):
     if base < 2 or base > 30:
         raise Exception("'Base' parameter boundaries exceeded. Base must be greater than 1 and at most 30")
     
+    if base > 6:
+        print("Exceeded recommended base dimension. Generation might take some time")
+        response = input("Continue anyway? (Y/N): ")
+        while response!="Y" and response!="N":
+            print("Please input Y(Yes) or N(No)")
+            response = input("Continue anyway? (Y/N): ")
+        
+        if response=="N":
+            exit()
+    
     return base
 
 

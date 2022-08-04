@@ -40,19 +40,17 @@ class Sudoku:
         
         return base_board
 
-    def get_matrix_a():
-        # TODO: Generate matrix A from self.base_board
-        pass
-
 
 def shuffle(s): 
     return sample(s,len(s)) 
+
 
 def pattern(r, c, base):
     """Pattern for a baseline valid solution
     """
     side = base*base
     return (base*(r%base)+r//base+c)%side
+
 
 def gen_sudoku(base: int):
     """Generates a random sudoku solution
@@ -74,8 +72,10 @@ def gen_sudoku(base: int):
 
     return board
 
+
 def expandLine(line, base):
     return line[0]+line[5:9].join([line[1:5]*(base-1)]*base)+line[9:13]
+
 
 def pretty_str(base, board):
     out=""
@@ -95,12 +95,14 @@ def pretty_str(base, board):
 
     return out
 
+
 def gen_print_board():
     base = 3
     rate = 0.75
     sudoku = Sudoku(base, rate)
 
     print(sudoku)
+    
 
 if __name__ == '__main__':
     gen_print_board()
