@@ -9,6 +9,7 @@ InputGenerator generates random Sudoku tables to be used as instances for the ex
 `parameters.cfg` file inside `InputGenerator/app`
 *   `base`: Lenght of a side of a single box of the sudoku table (Base=3 for normal sudoku) 
     *   1 < `base` < 31
+    *   Recommended to use at most 6
 *   `rate`: Percentual of numbers to remove from the full sudoku table
     *   0 < `rate` < 1
 
