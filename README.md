@@ -16,7 +16,7 @@ InputGenerator generates random Sudoku tables to be used as instances for the ex
 
 ### Execution
 *   Set parameters in `InputGenerator\app\parameters.cfg`
-*   Execute the following command from the root folder: PROVA
+*   Execute the following command from the root folder:
     ```bat
     python .\InputGenerator\app
     ```
