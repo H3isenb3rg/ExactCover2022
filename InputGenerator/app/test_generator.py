@@ -81,7 +81,7 @@ def rule4(board, base) -> bool:
         col_box = curr_box%base
         row_box = curr_box//base
         first_cell = (row_box*base, col_box*base)
-        curr_found = [890]
+        curr_found = []
         for i in range(0, base):
             for j in range(0, base):
                 curr_index = (first_cell[0]+i, first_cell[1]+j)
@@ -103,6 +103,7 @@ def test_dimensions():
         assert len(curr_board) == side
         for i in range(0, side):
             assert len(curr_board[i]) == side
+
 
 def test_sudoku_rules():
     bases = [2, 3, 4, 6, 10, 30]

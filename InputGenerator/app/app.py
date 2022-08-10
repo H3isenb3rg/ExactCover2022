@@ -22,8 +22,6 @@ def run():
         print_matrix_a(input_file, sudoku)
 
 
-
-
 def print_matrix_a(file_obj: TextIOWrapper, sudoku: sudoku_gen.Sudoku):
     # Matrix columns description
     # A) side^2 columns -> side^2 different cells and will be used to indicate that a symbol has been placed in a particular cell.
