@@ -7,7 +7,7 @@ def parse_file(input_file):
     Returns:
         output_matrix: bi-dimensional array of 1 and 0
     """
-    file = open(input_file, 'r')
+    file = open(input_file, 'r', encoding='UTF-8')
     lines = file.readlines()
     output_matrix = []
     for line in lines:
@@ -30,6 +30,7 @@ def clean(line):
     """
     line = line.replace(' ', '')
     line = line.replace('-', '')
+    line = line.replace('|', '')
     line = line.replace('\n', '')
     return line
 

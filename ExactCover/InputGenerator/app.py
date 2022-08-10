@@ -9,8 +9,8 @@ def run():
     """Executes the input generator"""
     base, rate = config_parser.parse_config()
     sudoku = sudoku_gen.Sudoku(base, rate)
-    root_dir = os.path.join(os.getcwd(), "InputGenerator")
-    input_dir = os.path.join(root_dir, "GeneratedInputs")
+    root_dir = os.path.join(os.getcwd(), "Inputs")
+    input_dir = os.path.join(root_dir, "Generated")
 
     dt_string = datetime.now().strftime("%d%m%Y%H%M%S")
     filename = f"{base}_{int(rate*100)}_{dt_string}.txt"
