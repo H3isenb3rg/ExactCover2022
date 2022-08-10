@@ -13,10 +13,8 @@ def parse_file(input_file):
     for line in lines:
         if line[0] != ';':
             line = clean(line)
-            line_list = list(line)
-            line_list = [int(i) for i in line_list]
+            line_list = [index for index, element in enumerate(line) if element == '1']
             output_matrix.append(line_list)
-
     return output_matrix
 
 
@@ -33,5 +31,4 @@ def clean(line):
     line = line.replace('|', '')
     line = line.replace('\n', '')
     return line
-
 
