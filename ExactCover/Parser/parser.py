@@ -1,5 +1,4 @@
-
-def parse_file(input_file):
+def parse_file(input_file: str):
     """
     Parse a file into a bi-dimensional matrix
     Args:
@@ -13,12 +12,12 @@ def parse_file(input_file):
     for line in lines:
         if line[0] != ';':
             line = clean(line)
-            line_list = [index for index, element in enumerate(line) if element == '1']
-            output_matrix.append(line_list)
+            line_set = set(index for index, element in enumerate(line) if element == '1')
+            output_matrix.append(line_set)
     return output_matrix
 
 
-def clean(line):
+def clean(line: str):
     """
     Remove the unnecessary part of a string
     Args:

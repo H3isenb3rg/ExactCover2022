@@ -7,7 +7,7 @@ def gen_matrix(file: str):
     return matrix
 
 
-def check_rows(matrix: str, lines: int) -> bool:
+def check_rows(matrix: list, lines: int) -> bool:
     if len(matrix) != lines:
         return False
     return True
@@ -22,8 +22,13 @@ def check_bounds(matrix: list, maximum: int) -> bool:
 
 
 def check_columns(matrix: list, indexes_for_row: int) -> bool:
-    for row in matrix:
-        len(row) == indexes_for_row[row]
+    dim_matrix = len(matrix)
+    for i in range(dim_matrix):
+        if len(matrix[i]) == indexes_for_row[i]:
+            continue
+        else:
+            return False
+    return True
 
 
 def test_parser():
@@ -32,7 +37,6 @@ def test_parser():
     matrix = gen_matrix(file)
     dimension = file_dim(file)
     indexes_for_row = ones_for_row(file)
-
     assert check_columns(matrix, indexes_for_row)
     assert check_rows(matrix, dimension[0])
     assert check_bounds(matrix, dimension[1])
