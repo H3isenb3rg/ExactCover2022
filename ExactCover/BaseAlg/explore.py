@@ -26,15 +26,3 @@ def get_compatibles(comp_matrix, i):
             compatible.append(j)
     return compatible
 
-
-def all_symbols(matrix: list):
-    m = []
-    for row in matrix:
-        for element in row:
-            if element not in m:
-                m.append(element)
-    return m
-
-
-
-

@@ -9,12 +9,16 @@ def parse_file(input_file: str):
     file = open(input_file, 'r', encoding='UTF-8')
     lines = file.readlines()
     output_matrix = []
+    count = 0
     for line in lines:
         if line[0] != ';':
             line = clean(line)
             line_set = set(index for index, element in enumerate(line) if element == '1')
             output_matrix.append(line_set)
-    return output_matrix
+            count = len(line)
+    assert void_columns(count, output_matrix), "There is at least one element of M absent in every set of N, " \
+                                               "impossible to compute COV "
+    return output_matrix, count
 
 
 def clean(line: str):
@@ -30,4 +34,20 @@ def clean(line: str):
     line = line.replace('|', '')
     line = line.replace('\n', '')
     return line
+
+
+def void_columns(count: int, matrix: list):
+    """
+       Check if all columns are not empty
+       Args:
+           count: length of a line of the input file
+           matrix: output matrix of the parser
+       Returns:
+           True if none columns are empty, False if there is an empty column
+       """
+    max_all_sets = max([max(a_set) for a_set in matrix])
+    if max_all_sets + 1 == count:
+        return True
+    else:
+        return False
 
