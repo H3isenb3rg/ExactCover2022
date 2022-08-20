@@ -1,7 +1,8 @@
 from genericpath import isdir
 import os
 from Parser import parser
-from BaseAlg import app as baseApp
+from BaseAlg import exactcover_base as baseAlg
+import numpy as np
 
 input_root = os.path.join(os.getcwd(), "Inputs")
 
@@ -17,7 +18,8 @@ def execute_files(root_path):
             execute_files(cur_file_path)
         else:
             matrix, size_m = parser.parse_file(cur_file_path)
-            cov, matrix_b = baseApp.ec(matrix, size_m)
-            
+            ec_base = baseAlg.ExactCoverBase(matrix, size_m)
+            cov, compatibility_matrix = ec_base.ec()
+
 
 execute_files(input_root)
