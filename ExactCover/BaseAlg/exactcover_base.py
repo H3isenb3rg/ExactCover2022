@@ -22,7 +22,7 @@ class ExactCoverBase:
             
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
-                if len(set_j.intersection(set_i)) == 0:
+                if len(set_j.intersection(set_i)) != 0:
                     continue
                 
                 indexes = (i , j)
