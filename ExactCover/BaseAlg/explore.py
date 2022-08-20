@@ -1,28 +1,19 @@
 
 cov = []
-compatibility_matrix = []
+matrix_b = []
 symbols = []
 matrix_parsed = []
 
 
-def explore(indexes: list, union: list, intersection: list):
-    for k in intersection:
+def explore(indexes: list, matrix_union: list, inter: list):
+    for k in inter:
         indexes_temp = indexes.append(k)
-        union_temp = union.append(matrix_parsed[k])
+        union_temp = matrix_union.append(matrix_parsed[k])
         if union_temp == symbols:
             cov.append(indexes_temp)
         else:
-            k_compatible = get_compatibles(compatibility_matrix, k)
-            intersection_temp = list(set(intersection).intersection(k_compatible))
+            intersection_temp = list(set(inter).intersection(set(matrix_b[k][:-1])))
             if intersection_temp:
                 explore(indexes_temp, union_temp, intersection_temp)
 
-
-def get_compatibles(comp_matrix, i):
-    compatible = []
-    for j in range(len(comp_matrix[i])) - 1:
-        line = comp_matrix[j]
-        if line[i] == 1:
-            compatible.append(j)
-    return compatible
 

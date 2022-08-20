@@ -23,10 +23,10 @@ def ec(matrix_a: list, size_m: int):
                 matrix_b[i].append(0)
                 continue
             
-            indeces = (i , j)
+            indexes = (i, j)
             matrix_union = set_i.union(set_j)
             if len(matrix_union) == size_m:
-                cov.append(indeces)
+                cov.append(indexes)
                 matrix_b[i].append(0)
             else:
                 matrix_b[i].append(1)
