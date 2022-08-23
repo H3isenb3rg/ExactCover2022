@@ -1,12 +1,14 @@
 # TODO: Print cov and other info to a file instead of saving it to a variable
 import numpy as np
+import ExactCover.compatibility_matrix as cm
+
 
 class ExactCoverBase:
-    def __init__(self, matrix_a: list[set], size_m: int) -> None:
+    def __init__(self, matrix_a: list[set], m: set) -> None:
         self.cov = []
         self.matrix_a = matrix_a
-        self.size_m = size_m
-        self.compatibility_matrix = CompatibilityMatrix(size_m)
+        self.m = m
+        self.compatibility_matrix = cm(len(m))
 
     def ec(self):
         for i, set_i in enumerate(self.matrix_a):
@@ -16,40 +18,37 @@ class ExactCoverBase:
                 continue
             
             # Current set has all the elements
-            if len(set_i) == self.size_m:
+            if set_i == self.m:
                 self.cov.append(i)
                 self.compatibility_matrix.append_empty_line(i+1)
             
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
-                if len(set_j.intersection(set_i)) != 0:
+                if not set_j.intersection(set_i).isEmpty():
                     continue
-                
-                indexes = (i , j)
+                indexes = (i, j)
                 matrix_union = set_i.union(set_j)
-                if len(matrix_union) == self.size_m:
+                if matrix_union == self.m:
                     self.cov.append(indexes)
                 else:
                     self.compatibility_matrix.compatibles(i, j)
                     inter = self.compatibility_matrix.get_inter(i, j)
-                    if len(inter) > 0:
+                    if inter:
                         self.explore(indexes, matrix_union, inter)
                         pass
-                    
         return self.cov, self.compatibility_matrix
-    
-    def explore(self, indexes: list, union: set, intersection: list):
-        for k in intersection:
+
+    def explore(self, indexes: list, matrix_union: set, inter: list):
+        for k in inter:
             indexes_temp = indexes.append(k)
-            union_temp = union.union(self.matrix_a[k])
-            if len(union_temp) == self.size_m:
+            union_temp = matrix_union.union(self.matrix_a[k])
+            if union_temp == self.m:
                 self.cov.append(indexes_temp)
             else:
                 k_compatible = self.get_compatibles(self.compatibility_matrix, k)
-                intersection_temp = list(set(intersection).intersection(k_compatible))
+                intersection_temp = list(set(inter).intersection(k_compatible))
                 if intersection_temp:
                     self.explore(indexes_temp, union_temp, intersection_temp)
-
 
     def get_compatibles(self, comp_matrix, i):
         compatible = []
@@ -58,19 +57,15 @@ class ExactCoverBase:
             if line[i] == 1:
                 compatible.append(j)
         return compatible
-    
 
+"""
 class CompatibilityMatrix:
     def __init__(self, size_m) -> None:
         self.matrix = []
         self.size_m = size_m
         
     def append_empty_line(self, size: int):
-        """Adds a new line of only '0' to the matrix
 
-        Args:
-            size (int): the length of the new line
-        """
         self.matrix.append(np.zeros(size, dtype=int))
         
     def compatibles(self, i: int, j: int):
@@ -80,3 +75,5 @@ class CompatibilityMatrix:
         first = self.matrix[i][:j-1]
         second = self.matrix[j][:j-1]
         return np.bitwise_and(first, second)
+    
+"""
