@@ -3,6 +3,7 @@ import os
 from Parser import parser
 # from BaseAlg import exactcover_base as baseAlg
 import exactcover_plus as plusAlg
+import time
 
 input_root = os.path.join(os.getcwd(), "Inputs")
 output_root = os.path.join(os.getcwd(), "Outputs")
