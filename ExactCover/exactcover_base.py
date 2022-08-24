@@ -1,4 +1,3 @@
-# TODO: Print cov and other info to a file instead of saving it to a variable
 import numpy as np
 import compatibility_matrix as cm
 import cov
@@ -7,7 +6,6 @@ import cov
 class ExactCoverBase:
     def __init__(self, matrix_a: list, m: set, out_filename: str) -> None:
         self.cov = cov.Cover(out_filename, "Exact Cover Base")
-        self.cov = []
         self.matrix_a = matrix_a
         self.m = m
         self.compatibility_matrix = cm.CompatibilityMatrix(len(m))
@@ -26,7 +24,7 @@ class ExactCoverBase:
             
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
-                print(f"{i} - {j}")
+                # print(f"{i} - {j}")
                 if set_j.intersection(set_i):
                     continue
                 indexes = [i, j]

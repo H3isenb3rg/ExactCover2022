@@ -18,14 +18,15 @@ def execute_files(root_path):
     for file in os.listdir(root_path):
         print(file)
         cur_file_path = os.path.join(root_path, file)
-        out_file_path = os.path.join(output_root, file)
+        out_file_path = os.path.join(output_root, "ec_" + file)
+        ecp_out_file_path = os.path.join(output_root, "ecp_" + file)
         if os.path.isdir(cur_file_path):
             execute_files(cur_file_path)
         else:
             matrix, m = parser.parse_file(cur_file_path)
             ec_base = baseAlg.ExactCoverBase(matrix, m, out_file_path)
             ec_base.ec()
-            ec_plus = plusAlg.ExactCoverPlus(matrix, len(m), out_file_path)
+            ec_plus = plusAlg.ExactCoverPlus(matrix, len(m), ecp_out_file_path)
             ec_plus.ec()
 
 

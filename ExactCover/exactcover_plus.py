@@ -1,10 +1,10 @@
-import numpy as np
 import compatibility_matrix as cm
 import cov
 import time
 
 class ExactCoverPlus:
     def __init__(self, matrix_a: list[set], size_m: int, out_filename: str) -> None:
+        self.out_filename = out_filename
         self.cov = cov.Cover(out_filename, "Exact Cover Plus")
         self.card = []
         self.matrix_a = matrix_a
@@ -17,11 +17,10 @@ class ExactCoverPlus:
         self.__ec()
         et = time.time()
         etp = time.process_time()
-        
-        print(f"Exec process time: {etp-stp}")
-        print(f"Exec time: {et-st}")
 
-        return self.cov, self.compatibility_matrix
+        with open(self.out_filename, "a") as out_file:
+            out_file.write(f"\n;;; Exec process time: {etp-stp}s\n")
+            out_file.write(f";;; Exec time: {et-st}s\n")
 
     def __ec(self):
         for i, set_i in enumerate(self.matrix_a):
