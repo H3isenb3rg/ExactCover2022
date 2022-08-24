@@ -3,8 +3,6 @@ import os
 from Parser import parser
 # from BaseAlg import exactcover_base as baseAlg
 import exactcover_plus as plusAlg
-import sys
-import time
 
 input_root = os.path.join(os.getcwd(), "Inputs")
 output_root = os.path.join(os.getcwd(), "Outputs")
@@ -26,9 +24,6 @@ def execute_files(root_path):
             # ec_base = baseAlg.ExactCoverBase(matrix, len(m))
             # ec_base.ec()
             ec_plus = plusAlg.ExactCoverPlus(bin_matrix, len(m), out_file_path)
-            st = time.process_time()
             ec_plus.ec()
-            et = time.process_time()
-            print(f"Exec time: {et-st}")
 
 execute_files(input_root)

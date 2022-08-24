@@ -1,6 +1,7 @@
 import numpy as np
 import compatibility_matrix as cm
 import cov
+import time
 
 class ExactCoverPlus:
     def __init__(self, matrix_a: list[int], size_m: int, out_filename: str) -> None:
@@ -15,6 +16,18 @@ class ExactCoverPlus:
         self.compatibility_matrix = cm.CompatibilityMatrix(size_m)
 
     def ec(self):
+        stp = time.process_time()
+        st = time.time()
+        self.__ec()
+        et = time.time()
+        etp = time.process_time()
+        
+        print(f"Exec process time: {etp-stp}")
+        print(f"Exec time: {et-st}")
+
+        return self.cov, self.compatibility_matrix
+
+    def __ec(self):
         for i, line_i in enumerate(self.matrix_a):
             # Current set is empty
             if line_i == self.empty_set:
