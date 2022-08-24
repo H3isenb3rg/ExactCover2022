@@ -3,32 +3,36 @@ import compatibility_matrix as cm
 import cov
 
 class ExactCoverPlus:
-    def __init__(self, matrix_a: list[set], size_m: int, out_filename: str) -> None:
+    def __init__(self, matrix_a: list[int], size_m: int, out_filename: str) -> None:
         self.cov = cov.Cover(out_filename, "Exact Cover Plus")
         self.card = []
         self.matrix_a = matrix_a
         self.size_m = size_m
+        self.empty_set = 0
+        self.full_set = int(b"1"*size_m, 2)
+        # self.empty_set = int(b"0"*size_m, 2)
+        # self.full_set = int(b"1"*size_m, 2)
         self.compatibility_matrix = cm.CompatibilityMatrix(size_m)
 
     def ec(self):
-        for i, set_i in enumerate(self.matrix_a):
+        for i, line_i in enumerate(self.matrix_a):
             # Current set is empty
-            if len(set_i) == 0:
+            if line_i == self.empty_set:
                 self.compatibility_matrix.append_empty_line(i+1)
                 self.card.append(0)
                 continue
             
             # Current set has all the elements
-            if len(set_i) == self.size_m:
+            if line_i == self.full_set:
                 self.cov.append([i])
                 self.compatibility_matrix.append_empty_line(i+1)
                 self.card.append(self.size_m)
             
-            self.card.append(len(set_i))
+            self.card.append(bin(line_i).count("1"))
             self.compatibility_matrix.append_empty_line(i+1)
-            for j, set_j in enumerate(self.matrix_a[:i]):
-                print(f"{i} - {j}")
-                if len(set_j.intersection(set_i)) != 0:
+            for j, line_j in enumerate(self.matrix_a[:i]):
+                # print(f"{i} - {j}")
+                if line_j & line_i != self.empty_set:
                     continue
                 
                 indexes = [i , j]
@@ -47,7 +51,7 @@ class ExactCoverPlus:
         for k in inter:
             indexes_temp = indexes.copy()
             indexes_temp.append(k)
-            card_temp = card_u + len(self.matrix_a[k])
+            card_temp = card_u + bin(self.matrix_a[k]).count("1")
             if card_temp == self.size_m:
                 self.cov.append(indexes_temp)
             else:

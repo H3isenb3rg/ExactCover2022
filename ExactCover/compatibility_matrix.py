@@ -27,7 +27,7 @@ class CompatibilityMatrix:
         Returns:
             set: intersection of the two columns of the compatibility matrix
         """
-        return self.matrix[i].intersection(self.matrix[j])
+        return self.matrix[i].intersection(self.matrix[j])        
     
     def get_tmp_inter(self, inter: set, k: int) -> set:
         return inter.intersection(self.matrix[k])

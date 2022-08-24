@@ -9,18 +9,21 @@ def parse_file(input_file: str):
     file = open(input_file, 'r', encoding='UTF-8')
     lines = file.readlines()
     output_matrix = []
+    binary_matrix = []
     m = set()
     for line in lines:
         if line[0] != ';':
             line = clean(line)
+            line_bytes = int(line, 2)
             line_set = set(index for index, element in enumerate(line) if element == '1')
             for i, element in enumerate(line_set):
                 m.add(element)
             output_matrix.append(line_set)
+            binary_matrix.append(line_bytes)
             count = len(line)
     assert void_columns(count, output_matrix), "There is at least one element of M absent in every set of N, " \
                                                "impossible to compute COV "
-    return output_matrix, m
+    return output_matrix, m, binary_matrix
 
 
 def clean(line: str):
