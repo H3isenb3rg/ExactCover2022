@@ -1,10 +1,11 @@
 from genericpath import isdir
 import os
 from Parser import parser
-from BaseAlg import exactcover_base as baseAlg
-import numpy as np
+# from BaseAlg import exactcover_base as baseAlg
+import exactcover_plus as plusAlg
 
 input_root = os.path.join(os.getcwd(), "Inputs")
+output_root = os.path.join(os.getcwd(), "Outputs")
 
 def execute_files(root_path):
     """Executes the exact cover algorithm for all files inside the 'Inputs' folder
@@ -13,13 +14,16 @@ def execute_files(root_path):
         root_path (string): path to the 'Inputs' folder
     """
     for file in os.listdir(root_path):
+        print(file)
         cur_file_path = os.path.join(root_path, file)
+        out_file_path = os.path.join(output_root, file)
         if os.path.isdir(cur_file_path):
             execute_files(cur_file_path)
         else:
-            matrix, size_m = parser.parse_file(cur_file_path)
-            ec_base = baseAlg.ExactCoverBase(matrix, size_m)
-            cov, compatibility_matrix = ec_base.ec()
-
+            matrix, m = parser.parse_file(cur_file_path)
+            # ec_base = baseAlg.ExactCoverBase(matrix, len(m))
+            # ec_base.ec()
+            ec_plus = plusAlg.ExactCoverPlus(matrix, len(m), out_file_path)
+            ec_plus.ec()
 
 execute_files(input_root)

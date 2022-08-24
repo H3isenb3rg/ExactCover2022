@@ -1,10 +1,10 @@
-# TODO: Print cov and other info to a file instead of saving it to a variable
 import numpy as np
 import compatibility_matrix as cm
+import cov
 
 class ExactCoverPlus:
-    def __init__(self, matrix_a: list[set], size_m: int) -> None:
-        self.cov = []
+    def __init__(self, matrix_a: list[set], size_m: int, out_filename: str) -> None:
+        self.cov = cov.Cover(out_filename, "Exact Cover Plus")
         self.card = []
         self.matrix_a = matrix_a
         self.size_m = size_m
@@ -15,18 +15,19 @@ class ExactCoverPlus:
             # Current set is empty
             if len(set_i) == 0:
                 self.compatibility_matrix.append_empty_line(i+1)
-                self.card[i] = 0
+                self.card.append(0)
                 continue
             
             # Current set has all the elements
             if len(set_i) == self.size_m:
-                self.cov.append(i)
+                self.cov.append([i])
                 self.compatibility_matrix.append_empty_line(i+1)
-                self.card[i] = self.size_m
+                self.card.append(self.size_m)
             
-            self.card[i] = len(set_i)
+            self.card.append(len(set_i))
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
+                print(f"{i} - {j}")
                 if len(set_j.intersection(set_i)) != 0:
                     continue
                 
@@ -44,7 +45,8 @@ class ExactCoverPlus:
     
     def explore(self, indexes: list, card_u: int, inter: list):
         for k in inter:
-            indexes_temp = indexes.append(k)
+            indexes_temp = indexes.copy()
+            indexes_temp.append(k)
             card_temp = card_u + len(self.matrix_a[k])
             if card_temp == self.size_m:
                 self.cov.append(indexes_temp)
