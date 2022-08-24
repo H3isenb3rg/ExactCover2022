@@ -1,5 +1,5 @@
 Inputs/Generated/*
-Outputs/*
+Outputs/*.txt
 tmp/*
 
 # Byte-compiled / optimized / DLL files
