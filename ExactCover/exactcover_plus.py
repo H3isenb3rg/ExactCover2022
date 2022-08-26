@@ -1,9 +1,10 @@
 import compatibility_matrix as cm
 import cov
 import time
+import matrix_a as ma
 
 class ExactCoverPlus:
-    def __init__(self, matrix_a: list[set], size_m: int, out_filename: str) -> None:
+    def __init__(self, matrix_a: ma.MatrixA, size_m: int, out_filename: str) -> None:
         self.out_filename = out_filename
         self.cov = cov.Cover(out_filename, "Exact Cover Plus")
         self.card = []
@@ -23,7 +24,8 @@ class ExactCoverPlus:
             out_file.write(f";;; Exec time: {et-st}s\n")
 
     def __ec(self):
-        for i, set_i in enumerate(self.matrix_a):
+        for i in range(0, len(self.matrix_a)):
+            set_i = self.matrix_a[i]
             # Current set is empty
             if len(set_i) == 0:
                 self.compatibility_matrix.append_empty_line(i+1)
@@ -38,8 +40,9 @@ class ExactCoverPlus:
             
             self.card.append(len(set_i))
             self.compatibility_matrix.append_empty_line(i+1)
-            for j, set_j in enumerate(self.matrix_a[:i]):
-                # print(f"{i} - {j}")
+            for j in range(i):
+                set_j = self.matrix_a[j]
+                print(f"{i} - {j}")
                 if len(set_j.intersection(set_i)) != 0:
                     continue
                 
