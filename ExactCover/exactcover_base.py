@@ -1,6 +1,7 @@
 import numpy as np
 import compatibility_matrix as cm
 import cov
+import time
 
 
 class ExactCoverBase:
@@ -11,6 +12,17 @@ class ExactCoverBase:
         self.compatibility_matrix = cm.CompatibilityMatrix(len(m))
 
     def ec(self):
+        stp = time.process_time()
+        st = time.time()
+        self.__ec()
+        et = time.time()
+        etp = time.process_time()
+
+        with open(self.out_filename, "a") as out_file:
+            out_file.write(f"\n;;; Exec process time: {etp-stp}s\n")
+            out_file.write(f";;; Exec time: {et-st}s\n")
+
+    def __ec(self):
         for i, set_i in enumerate(self.matrix_a):
             # Current set is empty
             if len(set_i) == 0:
@@ -24,7 +36,7 @@ class ExactCoverBase:
             
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
-                # print(f"{i} - {j}")
+                #print(f"{i} - {j}")
                 if set_j.intersection(set_i):
                     continue
                 indexes = [i, j]
