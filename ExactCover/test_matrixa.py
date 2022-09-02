@@ -1,8 +1,7 @@
 import matrix_a as ma
 import os
 
-def test1_matrix_a():
-    input_root = os.path.join(os.getcwd(), "Inputs")
+def test1_matrix_a(input_root: str):
     example1_root = os.path.join(input_root, "example_1.txt")
 
     matrix_a = ma.MatrixA(example1_root, 3)
@@ -38,33 +37,32 @@ def test1_matrix_a():
 
     print("Test 1 passed!")
 
-def test2_matrix_a():
-    input_root = os.path.join(os.getcwd(), "Inputs")
-    file_path = os.path.join(input_root, "Generated\\2_75_06082022150613.txt")
+def test2_matrix_a(input_root: str):
+    file_path = os.path.join(input_root, "2_75_0_4_02092022114638.txt")
 
     matrix_a = ma.MatrixA(file_path)
 
     assert len(matrix_a) == 52, f"Found: {len(matrix_a)}"
     assert matrix_a[0] == {0, 16, 32, 48}, f"Found: {matrix_a[0]}"
-    assert matrix_a[50] == {46, 62, 30, 15}, f"Found: {matrix_a[50]}"
+    assert matrix_a[50] == {14, 31, 43, 63}, f"Found: {matrix_a[50]}"
 
     print("Test 2 passed!")
 
-def test3_matrix_a():
-    input_root = os.path.join(os.getcwd(), "Inputs")
-    file_path = os.path.join(input_root, "Generated\\3_75_04082022233212.txt")
+def test3_matrix_a(input_root: str):
+    file_path = os.path.join(input_root, "3_75_0_4_02092022115236.txt")
 
     matrix_a = ma.MatrixA(file_path)
 
     assert len(matrix_a) == 561, f"Found: {len(matrix_a)}"
-    assert matrix_a[0] == {0, 81, 162, 243}, f"Found: {matrix_a[0]}"
-    assert matrix_a[50] == {7, 84, 228, 264}, f"Found: {matrix_a[50]}"
+    assert matrix_a[0] == {0, 86, 167, 248}, f"Found: {matrix_a[0]}"
+    assert matrix_a[50] == {10, 90, 171, 243}, f"Found: {matrix_a[50]}"
 
     print("Test 3 passed!")
 
 
 
 if __name__ == '__main__':
-    test1_matrix_a()
-    test2_matrix_a()
-    test3_matrix_a()
+    root = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "Test Inputs")
+    test1_matrix_a(root)
+    test2_matrix_a(root)
+    test3_matrix_a(root)

@@ -20,7 +20,8 @@ class ExactCoverPlus:
         etp = time.process_time()
 
         with open(self.out_filename, "a") as out_file:
-            out_file.write(f"\n;;; Exec process time: {etp-stp}s\n")
+            out_file.write(f"\n;;; Number of sets in COV: {len(self.cov)}\n")
+            out_file.write(f";;; Exec process time: {etp-stp}s\n")
             out_file.write(f";;; Exec time: {et-st}s\n")
 
     def __ec(self):
@@ -42,7 +43,7 @@ class ExactCoverPlus:
             self.compatibility_matrix.append_empty_line(i+1)
             for j in range(i):
                 set_j = self.matrix_a[j]
-                print(f"{i} - {j}")
+                print(f"EC Plus: {i} - {j}", end="\r")
                 if len(set_j.intersection(set_i)) != 0:
                     continue
                 

@@ -2,7 +2,7 @@ from random import sample
 import copy
 
 class Sudoku:
-    def __init__(self, base=3, rate=0.75):
+    def __init__(self, base=3, rate=0.75, p=0):
         """
         Args:
             base (int): The lenght of the side of a single box
@@ -10,6 +10,7 @@ class Sudoku:
         """
         self.base = base
         self.rate = rate
+        self.p = p
         self.full_board = gen_sudoku(base)
         self.base_board = self.remove_numbers()
 

@@ -10,6 +10,7 @@ class ExactCoverBase:
         self.matrix_a = matrix_a
         self.m = m
         self.compatibility_matrix = cm.CompatibilityMatrix(len(m))
+        self.out_filename = out_filename
 
     def ec(self):
         stp = time.process_time()
@@ -19,7 +20,8 @@ class ExactCoverBase:
         etp = time.process_time()
 
         with open(self.out_filename, "a") as out_file:
-            out_file.write(f"\n;;; Exec process time: {etp-stp}s\n")
+            out_file.write(f"\n;;; Number of sets in COV: {len(self.cov)}\n")
+            out_file.write(f";;; Exec process time: {etp-stp}s\n")
             out_file.write(f";;; Exec time: {et-st}s\n")
 
     def __ec(self):
@@ -36,7 +38,7 @@ class ExactCoverBase:
             
             self.compatibility_matrix.append_empty_line(i+1)
             for j, set_j in enumerate(self.matrix_a[:i]):
-                #print(f"{i} - {j}")
+                print(f"EC Base: {i} - {j}", end="\r")
                 if set_j.intersection(set_i):
                     continue
                 indexes = [i, j]

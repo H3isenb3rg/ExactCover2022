@@ -15,3 +15,6 @@ class Cover:
             out_file.write(" ".join(str(i) for i in indexes))
             out_file.write(" -\n")
             out_file.flush()
+
+    def __len__(self):
+        return len(self.cov)
