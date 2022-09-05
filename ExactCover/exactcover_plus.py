@@ -11,6 +11,10 @@ class ExactCoverPlus:
         self.matrix_a = matrix_a
         self.size_m = size_m
         self.compatibility_matrix = cm.CompatibilityMatrix(size_m)
+        self.pt = None
+        """CPU time"""
+        self.et = None
+        """Effective time"""
 
     def ec(self):
         stp = time.process_time()
@@ -19,10 +23,13 @@ class ExactCoverPlus:
         et = time.time()
         etp = time.process_time()
 
+        self.pt = etp-stp
+        self.et = et-st
+
         with open(self.out_filename, "a") as out_file:
             out_file.write(f"\n;;; Number of sets in COV: {len(self.cov)}\n")
-            out_file.write(f";;; Exec process time: {etp-stp}s\n")
-            out_file.write(f";;; Exec time: {et-st}s\n")
+            out_file.write(f";;; Exec process time: {self.pt}s\n")
+            out_file.write(f";;; Exec time: {self.et}s\n")
 
     def __ec(self):
         for i in range(0, len(self.matrix_a)):
@@ -43,7 +50,7 @@ class ExactCoverPlus:
             self.compatibility_matrix.append_empty_line(i+1)
             for j in range(i):
                 set_j = self.matrix_a[j]
-                print(f"EC Plus: {i} - {j}", end="\r")
+                print(f"EC Plus: {i} - {j}   ", end="\r")
                 if len(set_j.intersection(set_i)) != 0:
                     continue
                 
