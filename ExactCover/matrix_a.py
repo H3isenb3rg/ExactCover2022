@@ -1,6 +1,7 @@
 from distutils.errors import LinkError
 import linecache
 import re
+import os
 import Parser.parser as parser
 
 class MatrixA(object):
@@ -23,9 +24,10 @@ class MatrixA(object):
         self.matrix_height = 0
         """ Total number of lines of the matrix """
 
-        self.m = set()
-        """ Set M """
+        self.otimised_file_path = os.path.join(os.path.dirname(file_path), "optimised.txt")
+        """ Path to temporary file result of sudoku optimisation """
 
+        m = set()
         # Open input file
         with open(file_path, "r", encoding='UTF-8') as input_file:
             # Iterate over every line of the file
@@ -40,9 +42,9 @@ class MatrixA(object):
                         len_m = len(line)
 
                     line_set = set(index for index, element in enumerate(line) if element == '1')
-                    self.m = self.m.union(line_set)
+                    m = m.union(line_set)
             
-            assert len_m == len(self.m), "At least one element doesn't appear in any set. Can't compute COV"
+            assert len_m == len(m), "At least one element doesn't appear in any set. Can't compute COV"
         
         # Load the first chunk
         self.load_chunk_by_number(0)
