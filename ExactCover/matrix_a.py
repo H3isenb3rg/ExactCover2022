@@ -9,7 +9,7 @@ class MatrixA(object):
         """ Path to the input file """
         
         self.chunk_len = chunk_len
-        """ Lenght of each chunk """
+        """ Length of each chunk """
         
         self.curr_chunk_i = 0
         """ Current chunk loaded in memory """
