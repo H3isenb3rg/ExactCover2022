@@ -19,6 +19,3 @@ Progetto Algoritmi e Strutture Dati AA 21/22
     ```bat
     python .\ExactCover\InputGenerator
     ```
-
-## Testing
-Run `pytest` from the `InputGenerator` folder

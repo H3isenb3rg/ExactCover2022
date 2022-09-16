@@ -15,7 +15,8 @@ class Sudoku:
         self.base_board = self.remove_numbers()
 
     def __str__(self) -> str:
-        out = f";;; Base: {self.base} Rate: {self.rate}\n"
+        out = ";;; Sudoku\n"
+        out += f";;; Base: {self.base} Rate: {self.rate}\n"
         out += self.str_board(self.full_board)
         out += self.str_board(self.base_board)
 

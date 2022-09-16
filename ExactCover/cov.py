@@ -10,6 +10,7 @@ class Cover:
             out_file.write(f";;; Output of file: {filename}\n\n")
         
     def append(self, indexes: list):
+        indexes.sort()
         self.cov.append([str(i) for i in indexes])
         with open(self.full_path, "a") as out_file:
             out_file.write(" ".join(str(i) for i in indexes))
