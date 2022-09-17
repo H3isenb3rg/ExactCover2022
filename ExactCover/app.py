@@ -3,6 +3,7 @@ from Parser import parser
 import exactcover_base as baseAlg
 import exactcover_plus as plusAlg
 import matrix_a as ma
+import linecache
 
 
 def execute_files(root_path: str, output_root: str):
@@ -20,13 +21,20 @@ def execute_files(root_path: str, output_root: str):
             execute_files(cur_file_path, output_root)
         else:
             matrix, m = parser.parse_file(cur_file_path)
-            matrix_a = ma.MatrixA(cur_file_path, 100)
-            ec_base = baseAlg.ExactCoverBase(matrix, m, out_file_path)
+            matrix_a = get_matrix_a(cur_file_path, 250)
+            ec_base = baseAlg.ExactCoverBase(matrix_a, m, out_file_path)
             ec_base.ec()
             ec_plus = plusAlg.ExactCoverPlus(matrix_a, len(m), ecp_out_file_path)
             ec_plus.ec()
             if "Generated" in cur_file_path:
                 print("    " + compare_results(ec_base, ec_plus))
+
+def get_matrix_a(cur_file_path: str, chunk_size: int = None):
+    raw_line = linecache.getline(cur_file_path, 1)
+    if ";;; Sudoku" in raw_line:
+        return ma.MatrixA_Sudoku(cur_file_path, chunk_size)
+    else:
+        return ma.MatrixA(cur_file_path, chunk_size)
 
 def compare_results(baseEC: baseAlg.ExactCoverBase, plusEC: plusAlg.ExactCoverPlus) -> str:
     if baseEC.et > plusEC.et:
@@ -44,4 +52,3 @@ if __name__ == '__main__':
     input_root = os.path.join(root, "Inputs")
     output_path = os.path.join(root, "Outputs")
     execute_files(input_root, output_path)
-

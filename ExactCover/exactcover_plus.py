@@ -3,6 +3,7 @@ import cov
 import time
 import matrix_a as ma
 
+
 class ExactCoverPlus:
     def __init__(self, matrix_a: ma.MatrixA, size_m: int, out_filename: str) -> None:
         self.out_filename = out_filename
@@ -42,7 +43,7 @@ class ExactCoverPlus:
             
             # Current set has all the elements
             if len(set_i) == self.size_m:
-                self.cov.append([i])
+                self.cov.append(self.matrix_a.parse_cov([i]))
                 self.compatibility_matrix.append_empty_line(i+1)
                 self.card.append(self.size_m)
             
@@ -57,7 +58,7 @@ class ExactCoverPlus:
                 indexes = [i , j]
                 card_u = self.card[i] + self.card[j]
                 if card_u == self.size_m:
-                    self.cov.append(indexes)
+                    self.cov.append(self.matrix_a.parse_cov(indexes))
                 else:
                     self.compatibility_matrix.compatibles(i, j)
                     inter = self.compatibility_matrix.get_inter(i, j)
@@ -70,7 +71,7 @@ class ExactCoverPlus:
             indexes_temp.append(k)
             card_temp = card_u + len(self.matrix_a[k])
             if card_temp == self.size_m:
-                self.cov.append(indexes_temp)
+                self.cov.append(self.matrix_a.parse_cov(indexes_temp))
             else:
                 intersection_temp = self.compatibility_matrix.get_tmp_inter(inter, k)
                 if len(intersection_temp)>0:

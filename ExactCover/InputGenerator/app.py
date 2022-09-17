@@ -13,7 +13,7 @@ def run(root_dir: str):
     """Executes the input generator"""
     base, rate, p, groups = config_parser.parse_config()
     sudoku = sudoku_gen.Sudoku(base, rate, p)
-    input_dir = os.path.join(os.path.join(root_dir, "Inputs"), "Generated")
+    input_dir = os.path.join(os.path.join(root_dir, "Inputs"), "Sudoku")
     if not os.path.isdir(input_dir):
         os.mkdir(input_dir)
 
