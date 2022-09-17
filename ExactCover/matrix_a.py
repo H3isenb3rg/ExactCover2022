@@ -4,11 +4,9 @@ import Parser.parser as parser
 
 def parse_line_set(file_path: str, line_number: int):
     """Gets and cleans the given line of the file and returns the indexes set of the line
-
     Args:
         file_path (str): Path to the input file
         line_number (int): Line to retrieve from the file
-
     Returns:
         set: Set of indexes of the 'ones' in the line
     """
@@ -37,7 +35,9 @@ class MatrixA(object):
         self.matrix_height = 0
         """ Total number of lines of the matrix """
 
-        m = set()
+        self.m = set()
+        """ Set M """
+
         # Open input file
         self.init_matrix()
         
@@ -59,7 +59,7 @@ class MatrixA(object):
                         len_m = len(line)
 
                     line_set = set(index for index, element in enumerate(line) if element == '1')
-                    m = m.union(line_set)
+                    self.m = self.m.union(line_set)
             
             assert len_m == len(self.m), "At least one element doesn't appear in any set. Can't compute COV"
 
@@ -80,7 +80,6 @@ class MatrixA(object):
 
     def load_chunk_by_number(self, n: int):
         """ Loads a new chunk of the matrix in memory
-
         (args)
             n (int): Which chunk to load (first chunk is n=0)
         """
@@ -105,7 +104,6 @@ class MatrixA(object):
 
     def load_chunk_by_index(self, i:int):
         """ Loads a new chunk of the matrix in memory by specifying the desired index
-
         (args)
             i (int): The desired row of the matrix
         """
@@ -174,7 +172,6 @@ class MatrixA_Sudoku(MatrixA):
     
     def load_chunk_by_number(self, n: int):
         """ Loads a new chunk of the matrix in memory
-
         (args)
             n (int): Which chunk to load (first chunk is n=0)
         """
@@ -218,6 +215,3 @@ class MatrixA_Sudoku(MatrixA):
 
         return new_cov
         
-
-
-    
