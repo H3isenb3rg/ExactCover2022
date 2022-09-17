@@ -1,4 +1,4 @@
-import linecache
+import linecache, re
 import Parser.parser as parser
 
 
@@ -123,9 +123,14 @@ class MatrixA_Sudoku(MatrixA):
 
     def init_matrix(self):
         super().init_matrix()
+        self.base_square = self.get_base()**2
         
         # Build set of filled Sudoku cells             
         self.filled_set, self.index_filled, self.index_empty = self.get_filled_set()
+
+    def get_base(self):
+        finds = re.findall(";;; Base:\s([0-9]+)", linecache.getline(self.file_path, 2))
+        return int(finds[0])
 
     def get_filled_set(self):
         i=self.start_line+1
@@ -138,8 +143,8 @@ class MatrixA_Sudoku(MatrixA):
                 next_set = parse_line_set(self.file_path, i+1)
                 if min(cur_set) == min(next_set):
                     # Empty Sudoku Cell
-                    index_empty.extend([k for k in range(i, i+4)])
-                    i += 4
+                    index_empty.extend([k for k in range(i, i+self.base_square)])
+                    i += self.base_square
                 else:
                     # Filled Sudoku cell
                     filled_set = filled_set.union(cur_set)
@@ -152,8 +157,25 @@ class MatrixA_Sudoku(MatrixA):
                 index_filled.append(i)
                 i+=1
 
+        print(len(index_empty))
+        index_empty = self.clean_empties(index_empty, filled_set)
+        print(len(index_empty))
+
         return filled_set, index_filled, index_empty
     
+    def clean_empties(self, empties: list[int], filled_set: set[int]):
+        tb_removed = []
+        for index in empties:
+            cur_set = parse_line_set(self.file_path, index)
+            if len(filled_set.intersection(cur_set)) > 0:
+                # Cur empty is not compatible with the filled set. Remove it
+                tb_removed.append(index)
+        
+        for index in tb_removed:
+            empties.remove(index)
+
+        return empties
+
     def __len__(self):
         return len(self.index_empty) + 1
 
