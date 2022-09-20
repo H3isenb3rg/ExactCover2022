@@ -5,8 +5,8 @@ from ExactCover.RandomGenerator import random_gen, config_parser
 
 
 def run(root_dir: str):
-    row, column = config_parser.parse_config()
-    matrix_a = random_gen.gen_matrix(row, column)
+    row, column, solution = config_parser.parse_config()
+    matrix_a = random_gen.gen_matrix(row, column, solution)
     input_dir = os.path.join(os.path.join(root_dir, "Inputs"), "Random")
     if not os.path.isdir(input_dir):
         os.mkdir(input_dir)

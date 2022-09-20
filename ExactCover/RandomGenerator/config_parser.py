@@ -3,10 +3,7 @@ import re
 
 row_re = "row\s=\s([0-9]+)"
 column_re = "column\s=\s([0-9]+)"
-
-
-# TODO: invece di dare errore con parametro non trovato do un valore di dafault
-# TODO: aggiungere controllo row >= column
+solution_re = "solution\s=\s([0-1])"
 
 
 def parse_config():
@@ -17,7 +14,8 @@ def parse_config():
         config_str = config_file.read()
     row = read_row(config_str)
     column = read_column(config_str)
-    return int(row), int(column)
+    solution = read_solution(config_str)
+    return int(row), int(column), bool(solution)
 
 
 def read_row(cfg_str: str) -> float:
@@ -38,6 +36,15 @@ def read_column(cfg_str: str) -> int:
     if column < 0:
         raise Exception("'column' parameter boundaries exceeded. column must be integer positive")
     return column
+
+
+def read_solution(cfg_str: str) -> bool:
+    finds = re.findall(solution_re, cfg_str)
+    if len(finds) == 0:
+        raise Exception("Error while reading parameter solution. Parameter not found")
+    if finds[0] != '0' and finds[0] != '1':
+        raise Exception("solution must be 0 or 1")
+    return finds[0]
 
 
 def print_parameters():

@@ -1,18 +1,27 @@
 import random
 import time
+import numpy as np
 from random import seed
 from random import random
 
 
-def gen_matrix(row, column):
+def gen_matrix(row, column, solution):
     matrix_a = [[0 for x in range(column)] for y in range(row)]
+    assert column < row, "There is more column than row. " \
+                         "Will be impossible compute cov from this file"
     occupied = [0 for x in range(column)]
     for i in range(row):
         for j in range(column):
             matrix_a[i][j] = random_one(1 - occupied[j] * 0.02)
             if matrix_a[i][j] == 1:
                 occupied[j] += 1
-    assert all_occupied(occupied), "There is an empty column. Will be impossible compute cov from this file"
+    if solution:
+        for i in range(column):
+            for j in range(column):
+                matrix_a[i][j] = i == j
+    assert all_occupied(occupied), "There is an empty column. " \
+                                   "Will be impossible compute cov from this file"
+    np.random.shuffle(matrix_a)
     return matrix_a
 
 
