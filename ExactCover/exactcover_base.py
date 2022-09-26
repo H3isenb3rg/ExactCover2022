@@ -27,10 +27,11 @@ class ExactCoverBase:
         self.pt = etp-stp
         self.et = et-st
 
-        self.cov.execution_ended()
+        self.cov.write_comment("", begin="")
         self.cov.write_comment(f"Number of sets in COV: {len(self.cov)}")
         self.cov.write_comment(f"Exec process time: {etp-stp}s")
         self.cov.write_comment(f"Exec time: {et-st}s")
+        self.matrix_a.print_final_matrix(self.cov)
 
     def __ec(self):
         for i in range(len(self.matrix_a)):

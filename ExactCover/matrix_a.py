@@ -1,6 +1,7 @@
 import linecache, re
 import Parser.parser as parser
 import cov as cv
+from InputGenerator.sudoku_gen import pretty_str
 
 
 def parse_line_set(file_path: str, line_number: int):
@@ -131,7 +132,7 @@ class MatrixA_Sudoku(MatrixA):
 
     def init_matrix(self):
         super().init_matrix()
-        self.base_square = self.get_base()**2
+        self.base = self.get_base()
         
         # Build set of filled Sudoku cells             
         self.filled_set, self.index_filled, self.index_empty = self.get_filled_set()
@@ -151,8 +152,8 @@ class MatrixA_Sudoku(MatrixA):
                 next_set = parse_line_set(self.file_path, i+1)
                 if min(cur_set) == min(next_set):
                     # Empty Sudoku Cell
-                    index_empty.extend([k for k in range(i, i+self.base_square)])
-                    i += self.base_square
+                    index_empty.extend([k for k in range(i, i+self.base**2)])
+                    i += self.base**2
                 else:
                     # Filled Sudoku cell
                     filled_set = filled_set.union(cur_set)
@@ -246,5 +247,20 @@ class MatrixA_Sudoku(MatrixA):
         return new_cov
 
     def print_final_matrix(self, cov: cv.Cover):
-        pass
+        # Build Sudoku Table
+        side = self.base**2
+        area = side**2
+
+        for solution in cov.cov:
+            table = [[] for k in range(side)]
+            for index in solution:
+                line_set = sorted(parse_line_set(self.file_path, int(index)+self.start_line))
+                cur_cell = line_set[0]
+                cell_number = (line_set[1]-area) + 1 - (cur_cell // side)*side
+                y = cur_cell//side
+                table[y].append(cell_number)
+            
+            str_table = pretty_str(self.base, table)
+            cov.write_comment(str_table, begin="")
+                
         

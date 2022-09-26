@@ -5,11 +5,8 @@ class Cover:
 
         # Init Out File
         filename = full_path.split("\\")[-1]
-
-        # First comment manual to use mode 'w' and clean/create output file
-        with open(self.full_path, "w") as out_file:
-            out_file.write(f";;; {alg}\n")
-            
+        
+        self.write_comment(alg, mode="w")            
         self.write_comment(f"Output of file: {filename}\n")
         
     def append(self, indexes: list):
@@ -20,14 +17,9 @@ class Cover:
             out_file.write(" -\n")
             out_file.flush()
 
-    def write_comment(self, comment: str):
-        with open(self.full_path, "a") as out_file:
-            out_file.write(f";;; {comment}\n")
-            out_file.flush()
-
-    def execution_ended(self):
-        with open(self.full_path, "a") as out_file:
-            out_file.write(f"\n")
+    def write_comment(self, comment: str, begin: str =";;; ", mode: str="a"):
+        with open(self.full_path, mode, encoding='UTF-8') as out_file:
+            out_file.write(f"{begin}{comment}\n")
             out_file.flush()
 
     def __len__(self):
