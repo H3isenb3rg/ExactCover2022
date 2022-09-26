@@ -27,10 +27,10 @@ class ExactCoverPlus:
         self.pt = etp-stp
         self.et = et-st
 
-        with open(self.out_filename, "a") as out_file:
-            out_file.write(f"\n;;; Number of sets in COV: {len(self.cov)}\n")
-            out_file.write(f";;; Exec process time: {self.pt}s\n")
-            out_file.write(f";;; Exec time: {self.et}s\n")
+        self.cov.execution_ended()
+        self.cov.write_comment(f"Number of sets in COV: {len(self.cov)}")
+        self.cov.write_comment(f"Exec process time: {etp-stp}s")
+        self.cov.write_comment(f"Exec time: {et-st}s")
 
     def __ec(self):
         for i in range(0, len(self.matrix_a)):

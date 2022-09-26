@@ -1,5 +1,6 @@
 import linecache, re
 import Parser.parser as parser
+import cov as cv
 
 
 def parse_line_set(file_path: str, line_number: int):
@@ -115,6 +116,13 @@ class MatrixA(object):
 
     def parse_cov(self, cov: list[int]):
         return [i+1 for i in cov]
+    
+    def print_final_matrix(self, cov: cv.Cover):
+        """ 
+        If Matrix A base does nothing.  
+        If Matrix A Sudoku prints to output the resulting sudoku tables
+        """
+        pass
 
 
 class MatrixA_Sudoku(MatrixA):
@@ -157,9 +165,9 @@ class MatrixA_Sudoku(MatrixA):
                 index_filled.append(i)
                 i+=1
 
-        print(len(index_empty))
+        # print(len(index_empty))
         index_empty = self.clean_empties(index_empty, filled_set)
-        print(len(index_empty))
+        # print(len(index_empty))
 
         return filled_set, index_filled, index_empty
     
@@ -179,7 +187,7 @@ class MatrixA_Sudoku(MatrixA):
     def __len__(self):
         return len(self.index_empty) + 1
 
-    def __getitem__(self, key: int):
+    def __getitem__(self, key: int) -> set:
         # Se indice richiesto dentro chunk attuale allora ritorno set
         # Altrimenti carico chunk richiesto e ritorno set
         if key>=self.__len__():
@@ -236,4 +244,7 @@ class MatrixA_Sudoku(MatrixA):
             new_cov.append(self.index_empty[index-1] - self.start_line)
 
         return new_cov
+
+    def print_final_matrix(self, cov: cv.Cover):
+        pass
         

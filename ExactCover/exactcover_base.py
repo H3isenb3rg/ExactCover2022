@@ -27,10 +27,10 @@ class ExactCoverBase:
         self.pt = etp-stp
         self.et = et-st
 
-        with open(self.out_filename, "a") as out_file:
-            out_file.write(f"\n;;; Number of sets in COV: {len(self.cov)}\n")
-            out_file.write(f";;; Exec process time: {etp-stp}s\n")
-            out_file.write(f";;; Exec time: {et-st}s\n")
+        self.cov.execution_ended()
+        self.cov.write_comment(f"Number of sets in COV: {len(self.cov)}")
+        self.cov.write_comment(f"Exec process time: {etp-stp}s")
+        self.cov.write_comment(f"Exec time: {et-st}s")
 
     def __ec(self):
         for i in range(len(self.matrix_a)):
@@ -61,7 +61,6 @@ class ExactCoverBase:
                     if inter:
                         self.explore(indexes, matrix_union, inter)
                         pass
-        return self.cov, self.compatibility_matrix
 
     def explore(self, indexes: list, matrix_union: set, inter: list):
         for k in inter:

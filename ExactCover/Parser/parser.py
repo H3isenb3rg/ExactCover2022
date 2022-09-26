@@ -1,3 +1,5 @@
+# TODO: togliere salvataggio intera matrice in memoria 
+
 def parse_file(input_file: str):
     """
     Parse a file into a bi-dimensional matrix

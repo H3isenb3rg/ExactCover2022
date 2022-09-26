@@ -1,6 +1,7 @@
 Inputs/Sudoku/*
 Outputs/*.txt
 tmp/*
+ExactCover/InputGenerator/parameters.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -7,7 +7,6 @@ import numpy as np
 import random
 from datetime import datetime
 
-#TODO: Sfruttare celle piene del sudoku per fare unioni e ottenere set con più elementi
 
 def run(root_dir: str):
     """Executes the input generator"""
