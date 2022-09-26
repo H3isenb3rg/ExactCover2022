@@ -17,9 +17,9 @@ class Cover:
             out_file.write(" -\n")
             out_file.flush()
 
-    def write_comment(self, comment: str, begin: str =";;; ", mode: str="a"):
+    def write_comment(self, comment: str, begin: str =";;; ", end: str="\n", mode: str="a"):
         with open(self.full_path, mode, encoding='UTF-8') as out_file:
-            out_file.write(f"{begin}{comment}\n")
+            out_file.write(f"{begin}{comment}{end}")
             out_file.flush()
 
     def __len__(self):

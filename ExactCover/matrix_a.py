@@ -2,6 +2,7 @@ import linecache, re
 import Parser.parser as parser
 import cov as cv
 from InputGenerator.sudoku_gen import pretty_str
+import InputGenerator.test_generator as test_generator
 
 
 def parse_line_set(file_path: str, line_number: int):
@@ -260,7 +261,10 @@ class MatrixA_Sudoku(MatrixA):
                 y = cur_cell//side
                 table[y].append(cell_number)
             
+            # Check if feasible solution
+            test_generator.assert_rules(table, self.base)
+
             str_table = pretty_str(self.base, table)
-            cov.write_comment(str_table, begin="")
+            cov.write_comment(str_table, begin="", end="")
                 
         
