@@ -1,4 +1,4 @@
-import InputGenerator.sudoku_gen
+import InputGenerator.sudoku_gen as sudoku_gen
 
 def generate_full_sudoku_board(base):
     return sudoku_gen.Sudoku(base=base).full_board

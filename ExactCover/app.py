@@ -1,7 +1,6 @@
 import os
 from Parser import parser
-import exactcover_base as baseAlg
-import exactcover_plus as plusAlg
+import exactcover as ec
 import matrix_a as ma
 import linecache
 
@@ -22,9 +21,9 @@ def execute_files(root_path: str, output_root: str):
         else:
             m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
-            ec_base = baseAlg.ExactCoverBase(matrix_a, m, out_file_path)
+            ec_base = ec.ExactCover(matrix_a, m, out_file_path)
             ec_base.ec()
-            ec_plus = plusAlg.ExactCoverPlus(matrix_a, len(m), ecp_out_file_path)
+            ec_plus = ec.ExactCoverPlus(matrix_a, m, ecp_out_file_path)
             ec_plus.ec()
             if "Generated" in cur_file_path:
                 print("    " + compare_results(ec_base, ec_plus))
@@ -36,7 +35,7 @@ def get_matrix_a(cur_file_path: str, chunk_size: int = None):
     else:
         return ma.MatrixA(cur_file_path, chunk_size)
 
-def compare_results(baseEC: baseAlg.ExactCoverBase, plusEC: plusAlg.ExactCoverPlus) -> str:
+def compare_results(baseEC: ec.ExactCover, plusEC: ec.ExactCoverPlus) -> str:
     if baseEC.et > plusEC.et:
         rate = round(baseEC.et/plusEC.et, 2)
         return f"Plus alg {rate} times faster than Base alg"
