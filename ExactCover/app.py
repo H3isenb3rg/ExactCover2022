@@ -20,7 +20,7 @@ def execute_files(root_path: str, output_root: str):
         if os.path.isdir(cur_file_path):
             execute_files(cur_file_path, output_root)
         else:
-            matrix, m = parser.parse_file(cur_file_path)
+            m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
             ec_base = baseAlg.ExactCoverBase(matrix_a, m, out_file_path)
             ec_base.ec()

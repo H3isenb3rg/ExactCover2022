@@ -1,7 +1,7 @@
 from io import TextIOWrapper
 import os
 from datetime import datetime
-from ExactCover.RandomGenerator import random_gen, config_parser
+import random_gen, config_parser
 
 
 def run(root_dir: str):
