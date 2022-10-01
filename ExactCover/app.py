@@ -25,7 +25,7 @@ def execute_files(root_path: str, output_root: str):
             ec_base.ec()
             ec_plus = ec.ExactCoverPlus(matrix_a, m, ecp_out_file_path)
             ec_plus.ec()
-            if "Generated" in cur_file_path:
+            if "Sudoku" in cur_file_path or "Random" in cur_file_path:
                 print("    " + compare_results(ec_base, ec_plus))
 
 def get_matrix_a(cur_file_path: str, chunk_size: int = None):
@@ -36,18 +36,59 @@ def get_matrix_a(cur_file_path: str, chunk_size: int = None):
         return ma.MatrixA(cur_file_path, chunk_size)
 
 def compare_results(baseEC: ec.ExactCover, plusEC: ec.ExactCoverPlus) -> str:
-    if baseEC.et > plusEC.et:
-        rate = round(baseEC.et/plusEC.et, 2)
+    if baseEC.time > plusEC.time:
+        rate = round(baseEC.time/plusEC.time, 2)
         return f"Plus alg {rate} times faster than Base alg"
-    elif plusEC.et > baseEC.et:
-        rate = round(plusEC.et/baseEC.et, 2)
+    elif plusEC.time > baseEC.time:
+        rate = round(plusEC.time/baseEC.time, 2)
         return f"Base alg {rate} times faster than Plus alg"
     else:
         return "Both alg executed in similar times"
-        
 
-if __name__ == '__main__':
-    root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-    input_root = os.path.join(root, "Inputs")
-    output_path = os.path.join(root, "Outputs")
-    execute_files(input_root, output_path)
+# deprecated
+#def time_ec(ec_object: ec.ExactCover):
+#    ec_object.ec(False)
+
+# deprecated
+#def time_ec_examples(input_path: str, out_path: str, timeit_number: int = 100000):
+#    for file in os.listdir(input_path):
+#        full_path = os.path.join(input_path, file)
+#        if not os.path.isdir(full_path):
+#            print(file + " "*10)
+#            out_file_path = os.path.join(out_path, f"ec_{file}")
+#            ecp_out_file_path = os.path.join(out_path, f"ecp_{file}")
+#            m = parser.parse_file(full_path)
+#            matrix_a = get_matrix_a(full_path, 250)
+#
+#            ec_base = ec.ExactCover(matrix_a, m, out_file_path)
+#            time_result = timeit.timeit("ec_base.ec(False)", number=timeit_number)
+#            ec_base.cov.write_comment(f"Average time over {timeit_number} executions -> {time_result}")   
+#
+#            ec_plus = ec.ExactCoverPlus(matrix_a, m, ecp_out_file_path)
+#            time_result = timeit.timeit("ec_plus.ec(False)", number=timeit_number)
+#            ec_plus.cov.write_comment(f"Average time over {timeit_number} executions -> {time_result}")   
+       
+
+#if __name__ == '__main__':
+#    root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+#    input_root = os.path.join(root, "Inputs")
+#    output_path = os.path.join(root, "Outputs")
+#    timeit_number = 1000
+#
+#    # execute_files(input_root, output_path)
+#    for file in os.listdir(input_root):
+#        full_path = os.path.join(input_root, file)
+#        if not os.path.isdir(full_path):
+#            print(file + " "*10)
+#            out_file_path = os.path.join(output_path, f"ec_{file}")
+#            ecp_out_file_path = os.path.join(output_path, f"ecp_{file}")
+#            m = parser.parse_file(full_path)
+#            matrix_a = get_matrix_a(full_path, 250)
+#
+#            ec_base = ec.ExactCover(matrix_a, m, out_file_path)
+#            time_result = timeit.timeit("ec_base.ec(False)", number=timeit_number, globals={"ec_base": ec_base})
+#            ec_base.cov.write_comment(f"Average time over {timeit_number} executions -> {time_result}")   
+#
+#            ec_plus = ec.ExactCoverPlus(matrix_a, m, ecp_out_file_path)
+#            time_result = timeit.timeit("ec_plus.ec(False)", number=timeit_number, globals={"ec_plus": ec_plus})
+#            ec_plus.cov.write_comment(f"Average time over {timeit_number} executions -> {time_result}")   

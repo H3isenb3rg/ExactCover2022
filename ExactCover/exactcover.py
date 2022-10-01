@@ -10,34 +10,29 @@ class ExactCover:
         self.out_filename = out_filename
         self.matrix_a = matrix_a
         self.compatibility_matrix = cm.CompatibilityMatrix(len(m))
-        self.pt = None
-        """CPU time"""
-        self.et = None
-        """Effective time"""
+        self.time = None
+        """Execution time"""
         self.finish_init(out_filename, m)
     
     def finish_init(self, out_filename: str, m: set):
-        self.cov = cov.Cover(out_filename, "Exact Cover Base")
+        self.cov = cov.Cover(out_filename)
+        self.alg_name = "Exact Cover Base"
         self.m = m
 
+    def ec(self, verbose:bool = True):
+        self.cov.init_out_file(self.alg_name)
 
-    def ec(self):
-        stp = time.process_time()
-        st = time.time()
-        self._ec()
-        et = time.time()
-        etp = time.process_time()
+        start = time.time()
+        self._ec(verbose)
+        self.time = time.time() - start
 
-        self.pt = etp-stp
-        self.et = et-st
+        if verbose:
+            self.cov.write_comment("", begin="")
+            self.cov.write_comment(f"Number of sets in COV: {len(self.cov)}")
+            self.cov.write_comment(f"Execution Time: {self.time}s")
+            self.matrix_a.print_final_matrix(self.cov)
 
-        self.cov.write_comment("", begin="")
-        self.cov.write_comment(f"Number of sets in COV: {len(self.cov)}")
-        self.cov.write_comment(f"Exec process time: {etp-stp}s")
-        self.cov.write_comment(f"Exec time: {et-st}s")
-        self.matrix_a.print_final_matrix(self.cov)
-
-    def _ec(self):
+    def _ec(self, verbose: bool = True):
         for i in range(len(self.matrix_a)):
             set_i = self.matrix_a[i]
             # Current set is empty
@@ -53,7 +48,10 @@ class ExactCover:
             self.compatibility_matrix.append_empty_line(i+1)
             for j in range(i):
                 set_j = self.matrix_a[j]
-                print(f"EC Base: {i} - {j}   ", end="\r")
+
+                if verbose:
+                    print(f"EC Base: {i} - {j}   ", end="\r")
+                    
                 if set_j.intersection(set_i):
                     continue
                 indexes = [i, j]
@@ -85,11 +83,12 @@ class ExactCoverPlus(ExactCover):
         super().__init__(matrix_a, m, out_filename)
 
     def finish_init(self, out_filename: str, m: set):
-        self.cov = cov.Cover(out_filename, "Exact Cover Plus")
+        self.cov = cov.Cover(out_filename)
+        self.alg_name = "Exact Cover Plus"
         self.card = []
         self.size_m = len(m)
 
-    def _ec(self):
+    def _ec(self, verbose: bool = True):
         for i in range(0, len(self.matrix_a)):
             set_i = self.matrix_a[i]
             # Current set is empty
@@ -108,7 +107,10 @@ class ExactCoverPlus(ExactCover):
             self.compatibility_matrix.append_empty_line(i+1)
             for j in range(i):
                 set_j = self.matrix_a[j]
-                print(f"EC Plus: {i} - {j}   ", end="\r")
+
+                if verbose:
+                    print(f"EC Plus: {i} - {j}   ", end="\r")
+
                 if len(set_j.intersection(set_i)) != 0:
                     continue
                 

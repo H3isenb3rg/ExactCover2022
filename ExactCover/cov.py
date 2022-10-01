@@ -1,10 +1,10 @@
 class Cover:
-    def __init__(self, full_path: str, alg: str) -> None:
+    def __init__(self, full_path: str) -> None:
         self.cov = []
         self.full_path = full_path
 
-        # Init Out File
-        filename = full_path.split("\\")[-1]
+    def init_out_file(self, alg):
+        filename = self.full_path.split("\\")[-1]
         
         self.write_comment(alg, mode="w")            
         self.write_comment(f"Output of file: {filename}\n")
