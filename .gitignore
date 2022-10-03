@@ -1,5 +1,6 @@
 Inputs/Sudoku/*
-Outputs/*.txt
+Outputs/*
+!Outputs/Expected/*
 Inputs/Random/*
 tmp/*
 ExactCover/InputGenerator/parameters.cfg

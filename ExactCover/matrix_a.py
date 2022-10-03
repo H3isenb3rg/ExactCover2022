@@ -66,6 +66,9 @@ class MatrixA(object):
             
             assert len_m == len(self.m), "At least one element doesn't appear in any set. Can't compute COV"
 
+    def __str__(self) -> str:
+        return f"|N|: {self.matrix_height}   |M|: {len(self.m)}"
+
     def __len__(self):
         return self.matrix_height
 
@@ -121,10 +124,23 @@ class MatrixA(object):
     
     def print_final_matrix(self, cov: cv.Cover):
         """ 
-        If Matrix A base does nothing.  
-        If Matrix A Sudoku prints to output the resulting sudoku tables
+        If [Matrix A] base does nothing.    
+
+        If [Matrix A Sudoku] prints to output the resulting sudoku tables
         """
         pass
+    
+    def cardinalities_distribution(self) -> dict:
+        cards = {}
+
+        for i in range(len(self)):
+            curr_card = len(self[i])
+            if curr_card in cards:
+                cards[curr_card] += 1
+            else:
+                cards[curr_card] = 1
+        
+        return cards
 
 
 class MatrixA_Sudoku(MatrixA):
@@ -185,6 +201,9 @@ class MatrixA_Sudoku(MatrixA):
             empties.remove(index)
 
         return empties
+
+    def __str__(self) -> str:
+        return f"|N| -> Initial: {self.matrix_height}   Optimised for Sudoku: {len(self)}\n|M|: {len(self.m)}"
 
     def __len__(self):
         return len(self.index_empty) + 1
@@ -252,6 +271,21 @@ class MatrixA_Sudoku(MatrixA):
         side = self.base**2
         area = side**2
 
+        empty_row = [0 for j in range(side)]
+        initial_table = [empty_row.copy() for k in range(side)]
+
+        for index in self.index_filled:
+            line_set = sorted(parse_line_set(self.file_path, int(index)))
+            cur_cell = line_set[0]
+            cell_number = (line_set[1]-area) + 1 - (cur_cell // side)*side
+
+            y = cur_cell//side
+            x = cur_cell - y*side
+            initial_table[y][x] = cell_number
+        
+        out = f"Starting Sudoku Table:\n{pretty_str(self.base, initial_table, begin='')}\n"
+
+        out += "Resulting Sudoku Tables:\n"
         for solution in cov.cov:
             table = [[] for k in range(side)]
             for index in solution:
@@ -264,7 +298,17 @@ class MatrixA_Sudoku(MatrixA):
             # Check if feasible solution
             test_generator.assert_rules(table, self.base)
 
-            str_table = pretty_str(self.base, table)
-            cov.write_comment(str_table, begin="", end="")
-                
+            str_table = pretty_str(self.base, table, begin="")
+            out += f"{str_table}\n"
+        
+        cov.write_comment(out, begin="", end="")
+    
+    def cardinalities_distribution(self) -> dict:
+        if len(self.index_filled) == 1:
+            return {4: self.matrix_height}
+        
+        return {
+            4: len(self.index_empty),
+            len(self.index_filled)*4: 1
+        }
         

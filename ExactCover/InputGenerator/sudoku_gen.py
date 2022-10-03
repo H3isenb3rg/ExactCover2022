@@ -79,7 +79,7 @@ def expandLine(line, base):
     return line[0]+line[5:9].join([line[1:5]*(base-1)]*base)+line[9:13]
 
 
-def pretty_str(base, board):
+def pretty_str(base, board, begin: str=";;; "):
     out=""
     side = base*base
     line0  = expandLine("╔═══╤═══╦═══╗", base)
@@ -90,10 +90,10 @@ def pretty_str(base, board):
 
     symbol = " 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     nums   = [ [""]+[symbol[n] for n in row] for row in board ]
-    out += ";;; " + line0 + "\n"
+    out += begin + line0 + "\n"
     for r in range(1,side+1):
-        out += ";;; " + "".join(n+s for n,s in zip(nums[r-1],line1.split("."))) + "\n"
-        out += ";;; " + [line2,line3,line4][(r%side==0)+(r%base==0)] + "\n"
+        out += begin + "".join(n+s for n,s in zip(nums[r-1],line1.split("."))) + "\n"
+        out += begin + [line2,line3,line4][(r%side==0)+(r%base==0)] + "\n"
 
     return out
 

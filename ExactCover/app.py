@@ -3,6 +3,8 @@ from Parser import parser
 import exactcover as ec
 import matrix_a as ma
 import linecache
+import filecmp
+import cov
 
 
 def execute_files(root_path: str, output_root: str):
@@ -14,19 +16,28 @@ def execute_files(root_path: str, output_root: str):
     for file in os.listdir(root_path):
         print(file + " "*10)
         cur_file_path = os.path.join(root_path, file)
-        out_file_path = os.path.join(output_root, "ec_" + file)
-        ecp_out_file_path = os.path.join(output_root, "ecp_" + file)
         if os.path.isdir(cur_file_path):
             execute_files(cur_file_path, output_root)
         else:
             m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
-            ec_base = ec.ExactCover(matrix_a, m, out_file_path)
+            ec_base = ec.ExactCover(matrix_a, m, file, output_root)
             ec_base.ec()
-            ec_plus = ec.ExactCoverPlus(matrix_a, m, ecp_out_file_path)
+            ec_plus = ec.ExactCoverPlus(matrix_a, m, file, output_root)
             ec_plus.ec()
+            compare_results_file(ec_base.cov, ec_plus.cov)
+
             if "Sudoku" in cur_file_path or "Random" in cur_file_path:
                 print("    " + compare_results(ec_base, ec_plus))
+
+def compare_results_file(cov_base: cov.Cover, cov_plus: cov.Cover):
+    comparison = filecmp.cmp(cov_base.results_path, cov_plus.results_path, shallow=False)
+    comment = f"Corresponding Results: {comparison}"
+
+    cov_base.write_comment(comment)
+    cov_plus.write_comment(comment)
+
+    return comparison
 
 def get_matrix_a(cur_file_path: str, chunk_size: int = None):
     raw_line = linecache.getline(cur_file_path, 1)
