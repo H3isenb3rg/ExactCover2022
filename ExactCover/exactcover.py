@@ -33,7 +33,7 @@ class ExactCover:
             self.cov.write_comment(f"Execution Time: {round(self.time, 6)}s", end="\n\n")
             self._print_cardinalities("Cardinalities Distribution (cardinality -> occurrences):", self.cov.cardinalities_distribution())
             self._print_cardinalities("Matrix A Cardinalities Distribution:", self.matrix_a.cardinalities_distribution(), True)
-            self.cov.write_comment(comment=f"Visited nodes: {round(self.visited_nodes*100/self.total_nodes, 2)}% ({self.visited_nodes}/{self.total_nodes})", end="\n\n")
+            self.cov.write_comment(comment=f"Visited nodes: {round(self.visited_nodes*100/self.total_nodes, 2)}% ({self.visited_nodes:,}/{self.total_nodes:,})", end="\n\n")
             self.matrix_a.print_final_matrix(self.cov)
 
     def _print_cardinalities(self, title: str, cards: dict, skip_base: bool = False):

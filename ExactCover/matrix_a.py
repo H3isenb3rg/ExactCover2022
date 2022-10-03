@@ -63,8 +63,9 @@ class MatrixA(object):
 
                     line_set = set(index for index, element in enumerate(line) if element == '1')
                     self.m = self.m.union(line_set)
-            
-            assert len_m == len(self.m), "At least one element doesn't appear in any set. Can't compute COV"
+
+            if len_m < len(self.m):
+                raise Exception("At least one element doesn't appear in any set. Can't compute COV")
 
     def __str__(self) -> str:
         return f"|N|: {self.matrix_height}   |M|: {len(self.m)}"
@@ -75,7 +76,8 @@ class MatrixA(object):
     def __getitem__(self, key: int):
         # Se indice richiesto dentro chunk attuale allora ritorno set
         # Altrimenti carico chunk richiesto e ritorno set
-        assert key<self.matrix_height
+        if key>=self.matrix_height:
+            raise Exception(f"Matrix A element '{key}' out of bounds")
 
         if key//self.chunk_len!=self.curr_chunk_i:
             # Index is outside the current chunk we need to load the correct one
@@ -90,7 +92,8 @@ class MatrixA(object):
             n (int): Which chunk to load (first chunk is n=0)
         """
         chunk_start = self.chunk_len * n
-        assert chunk_start < self.matrix_height
+        if chunk_start >= self.matrix_height:
+            raise Exception(f"Requested chunk '{n}' is not in the matrix")
 
         if chunk_start + self.chunk_len-1 < self.matrix_height:
             # Not the last chunk we need to load the whole chunk_len

@@ -5,9 +5,21 @@ import matrix_a as ma
 import linecache
 import filecmp
 import cov
+import pandas as pd
 
 
-def execute_files(root_path: str, output_root: str):
+def launch(input_root, output_path):
+    comp_results = []
+
+    execute_files(input_root, output_path, comp_results)
+
+    print(comp_results)
+    results_df = pd.DataFrame.from_records(comp_results, columns=["name", "N", "M", "Time Base", "Time Plus"])
+    results_df.to_csv(os.path.join(output_path, "data.csv"))
+    
+
+
+def execute_files(root_path: str, output_root: str, results: list):
     """Executes the exact cover algorithm for all files inside the 'Inputs' folder
 
     Args:
@@ -17,7 +29,7 @@ def execute_files(root_path: str, output_root: str):
         print(file + " "*10)
         cur_file_path = os.path.join(root_path, file)
         if os.path.isdir(cur_file_path):
-            execute_files(cur_file_path, output_root)
+            execute_files(cur_file_path, output_root, results)
         else:
             m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
@@ -27,8 +39,19 @@ def execute_files(root_path: str, output_root: str):
             ec_plus.ec()
             compare_results_file(ec_base.cov, ec_plus.cov)
 
+            results.append([
+                file,           # Name of the file
+                len(matrix_a),  # |N|
+                len(ec_base.m), # |M|
+                ec_base.time,   # EC Base execution time
+                ec_plus.time    # EC Plus execution time
+            ])
+
             if "Sudoku" in cur_file_path or "Random" in cur_file_path:
                 print("    " + compare_results(ec_base, ec_plus))
+
+def log_computational_results():
+    pass
 
 def compare_results_file(cov_base: cov.Cover, cov_plus: cov.Cover):
     comparison = filecmp.cmp(cov_base.results_path, cov_plus.results_path, shallow=False)
