@@ -12,7 +12,7 @@ def gen_matrix(row, column, solution):
     occupied = [0 for x in range(column)]
     for i in range(row):
         for j in range(column):
-            matrix_a[i][j] = random_one(1 - occupied[j] * 0.02)
+            matrix_a[i][j] = random_one()
             if matrix_a[i][j] == 1:
                 occupied[j] += 1
     if solution:
@@ -25,11 +25,9 @@ def gen_matrix(row, column, solution):
     return matrix_a
 
 
-def random_one(prob):
-    if prob < 0:
-        return 0
+def random_one():
     seed(time.time())
-    return round(random() * prob)
+    return round(np.random.rand())
 
 
 def all_occupied(occupied):
