@@ -18,7 +18,6 @@ def launch(input_root, output_path):
     results_df.to_csv(os.path.join(output_path, "data.csv"))
     
 
-
 def execute_files(root_path: str, output_root: str, results: list):
     """Executes the exact cover algorithm for all files inside the 'Inputs' folder
 
