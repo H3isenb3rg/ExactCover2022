@@ -153,6 +153,7 @@ class MatrixA_Sudoku(MatrixA):
     def init_matrix(self):
         super().init_matrix()
         self.base = self.get_base()
+        self.rate = self.get_rate()
         
         # Build set of filled Sudoku cells             
         self.filled_set, self.index_filled, self.index_empty = self.get_filled_set()
@@ -160,6 +161,10 @@ class MatrixA_Sudoku(MatrixA):
     def get_base(self):
         finds = re.findall(";;; Base:\s([0-9]+)", linecache.getline(self.file_path, 2))
         return int(finds[0])
+
+    def get_rate(self):
+        finds = re.findall("Rate:\s(0\.[0-9]+)", linecache.getline(self.file_path, 2))
+        return float(finds[0])
 
     def get_filled_set(self):
         i=self.start_line+1

@@ -2,7 +2,7 @@ import os
 import app
 
 MIN_RATE = 0.1
-STEP = 0.9
+STEP = 0.1
 COUNT = 10
 BASE = 2
 
@@ -10,7 +10,10 @@ BASE = 2
 def generate_sudoku(count, base, min_rate, step):
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     for i in range(count):
-        generate_sudoku_config(base, min_rate + step * i)
+        new_rate = min_rate + step * i
+        if new_rate>=1:
+            break
+        generate_sudoku_config(base, new_rate)
         app.run(root)
 
 
