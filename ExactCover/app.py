@@ -33,8 +33,8 @@ def launch(input_root, output_path):
             "Visited Rate Plus",
             "Cov Len Base",
             "Cov Len Plus",
-            "Sudoku Base",
-            "Sudoku Rate"
+            "Sudoku Rate",
+            "Sudoku Base"
             ])
     results_df.to_csv(os.path.join(output_path, "data.csv"))
 
