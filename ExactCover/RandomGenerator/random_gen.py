@@ -7,8 +7,6 @@ from random import random
 
 def gen_matrix(row, column, solution):
     matrix_a = [[0 for x in range(column)] for y in range(row)]
-    assert column < row, "There is more column than row. " \
-                         "Will be impossible compute cov from this file"
     occupied = [0 for x in range(column)]
     for i in range(row):
         for j in range(column):
