@@ -6,6 +6,7 @@ import linecache
 import filecmp
 import cov
 import pandas as pd
+from filprofiler.api import profile
 
 
 def launch(input_root, output_path):
@@ -38,6 +39,7 @@ def launch(input_root, output_path):
             ])
     results_df.to_csv(os.path.join(output_path, "data.csv"))
 
+
 def execute_files(root_path: str, output_root: str, results: list):
     """Executes the exact cover algorithm for all files inside the 'Inputs' folder
 
@@ -53,8 +55,10 @@ def execute_files(root_path: str, output_root: str, results: list):
             m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
             ec_base = ec.ExactCover(matrix_a, m, file, output_root)
+            #profile(lambda: ec_base.ec(), 'fil/base' + file) # cambiare commento per profilare memoria
             ec_base.ec()
             ec_plus = ec.ExactCoverPlus(matrix_a, m, file, output_root)
+            #profile(lambda: ec_plus.ec(), 'fil/plus' + file) # cambiare commento per profilare memoria
             ec_plus.ec()
             compare_results_file(ec_base.cov, ec_plus.cov)
 
