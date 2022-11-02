@@ -4,6 +4,8 @@ Outputs/*
 Inputs/Random/*
 tmp/*
 ExactCover/InputGenerator/parameters.cfg
+.vscode
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

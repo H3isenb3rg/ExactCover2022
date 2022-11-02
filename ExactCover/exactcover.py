@@ -3,21 +3,22 @@ import compatibility_matrix as cm
 import cov
 import time
 import matrix_a as ma
+import binary_cell as bc
 
-# FIXME: per il random i risultati non corrispondono
+
 class ExactCover:
-    def __init__(self, matrix_a: ma.MatrixA, m: set, input_filename: str, out_dir: str):
+    def __init__(self, matrix_a: ma.MatrixA|ma.MatrixA_Binary|ma.MatrixA_Sudoku, input_filename: str, out_dir: str):
         self.matrix_a = matrix_a
-        self.compatibility_matrix = cm.CompatibilityMatrix(len(m))
+        self.compatibility_matrix = cm.CompatibilityMatrix(len(self.matrix_a.m))
         self.time = None
         """Execution time"""
-        self.m = m
-        self.finish_init(out_dir, input_filename, m)
+        self.m = matrix_a.m
+        self.finish_init(out_dir, input_filename)
 
         self.total_nodes = 2**(len(self.matrix_a))-1
         self.visited_nodes = 0
     
-    def finish_init(self, out_dir: str, input_filename: str, m: set):
+    def finish_init(self, out_dir: str, input_filename: str):
         self.cov = cov.Cover(out_dir, input_filename, "Exact Cover Base")
 
     def ec(self, verbose:bool = True):
@@ -86,7 +87,7 @@ class ExactCover:
                     if inter:
                         self.explore(indexes, matrix_union, inter)
 
-    def explore(self, indexes: list, matrix_union: set, inter: list):
+    def explore(self, indexes: list, matrix_union: set|bc.BinaryCell, inter: list):
         for k in inter:
             indexes_temp = indexes.copy()
             indexes_temp.append(k)
@@ -101,10 +102,10 @@ class ExactCover:
 
 
 class ExactCoverPlus(ExactCover):
-    def __init__(self, matrix_a: ma.MatrixA, m: set, input_filename: str, out_dir: str):
-        super().__init__(matrix_a, m, input_filename, out_dir)
+    def __init__(self, matrix_a: ma.MatrixA, input_filename: str, out_dir: str):
+        super().__init__(matrix_a, input_filename, out_dir)
 
-    def finish_init(self, out_dir: str, input_filename: str, m: set):
+    def finish_init(self, out_dir: str, input_filename: str):
         self.cov = cov.Cover(out_dir, input_filename, "Exact Cover Plus")
         self.size_m = len(self.m)
         self.card = []

@@ -6,8 +6,7 @@ import linecache
 import filecmp
 import cov
 import pandas as pd
-from filprofiler.api import profile
-
+#from filprofiler.api import profile
 
 def launch(input_root, output_path):
     comp_results = []
@@ -52,12 +51,12 @@ def execute_files(root_path: str, output_root: str, results: list):
         if os.path.isdir(cur_file_path):
             execute_files(cur_file_path, output_root, results)
         else:
-            m = parser.parse_file(cur_file_path)
+            # m = parser.parse_file(cur_file_path)
             matrix_a = get_matrix_a(cur_file_path, 250)
-            ec_base = ec.ExactCover(matrix_a, m, file, output_root)
+            ec_base = ec.ExactCover(matrix_a, file, output_root)
             #profile(lambda: ec_base.ec(), 'fil/base' + file) # cambiare commento per profilare memoria
             ec_base.ec()
-            ec_plus = ec.ExactCoverPlus(matrix_a, m, file, output_root)
+            ec_plus = ec.ExactCoverPlus(matrix_a, file, output_root)
             #profile(lambda: ec_plus.ec(), 'fil/plus' + file) # cambiare commento per profilare memoria
             ec_plus.ec()
             compare_results_file(ec_base.cov, ec_plus.cov)
@@ -105,7 +104,7 @@ def get_matrix_a(cur_file_path: str, chunk_size: int = None):
     if ";;; Sudoku" in raw_line:
         return ma.MatrixA_Sudoku(cur_file_path, chunk_size)
     else:
-        return ma.MatrixA(cur_file_path, chunk_size)
+        return ma.MatrixA_Binary(cur_file_path, chunk_size)
 
 def compare_results(baseEC: ec.ExactCover, plusEC: ec.ExactCoverPlus) -> str:
     if baseEC.time > plusEC.time:

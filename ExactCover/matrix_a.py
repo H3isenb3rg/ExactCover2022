@@ -3,19 +3,8 @@ import Parser.parser as parser
 import cov as cv
 from InputGenerator.sudoku_gen import pretty_str
 import InputGenerator.test_generator as test_generator
-
-
-def parse_line_set(file_path: str, line_number: int):
-    """Gets and cleans the given line of the file and returns the indexes set of the line
-    Args:
-        file_path (str): Path to the input file
-        line_number (int): Line to retrieve from the file
-    Returns:
-        set: Set of indexes of the 'ones' in the line
-    """
-    raw_line = linecache.getline(file_path, line_number)
-    line = parser.clean(raw_line)
-    return set(index for index, element in enumerate(line) if element == '1')
+import binary_cell as bc
+import sys
     
 
 class MatrixA(object):
@@ -105,7 +94,7 @@ class MatrixA(object):
         self.curr_chunk = []
         for j in range(total_rows):
             curr_file_line = self.start_line + chunk_start + j + 1  # '+1' because getline counts from 1 (first line is line 1)
-            line_set = parse_line_set(self.file_path, curr_file_line)
+            line_set = self.parse_line_set(self.file_path, curr_file_line)
             self.curr_chunk.append(line_set)
         
         # Save the current chunk number loaded in memeory
@@ -145,6 +134,38 @@ class MatrixA(object):
         
         return cards
 
+    def parse_line_set(self, file_path: str, line_number: int):
+        """Gets and cleans the given line of the file and returns the indexes set of the line
+            Args:
+                file_path (str): Path to the input file
+                line_number (int): Line to retrieve from the file
+            Returns:
+                set: Set of indexes of the 'ones' in the line
+        """
+        raw_line = linecache.getline(file_path, line_number)
+        line = parser.clean(raw_line)
+        return set(index for index, element in enumerate(line) if element == '1')
+
+
+class MatrixA_Binary(MatrixA):
+    def __init__(self, file_path: str, chunk_len: int = 50) -> None:
+        super().__init__(file_path, chunk_len)
+
+        self.m = bc.BinaryCell("1"*len(self.m))
+        
+
+    def parse_line_set(self, file_path: str, line_number: int):
+        """Gets and cleans the given line of the file and returns the indexes set of the line
+            Args:
+                file_path (str): Path to the input file
+                line_number (int): Line to retrieve from the file
+            Returns:
+                set: Set of indexes of the 'ones' in the line
+        """
+        raw_line = linecache.getline(file_path, line_number)
+        line = parser.clean(raw_line)
+        return bc.BinaryCell(line)
+
 
 class MatrixA_Sudoku(MatrixA):
     def __init__(self, file_path: str, chunk_len: int = 50) -> None:
@@ -172,9 +193,9 @@ class MatrixA_Sudoku(MatrixA):
         index_filled = []
         index_empty = []
         while i <= (self.matrix_height + self.start_line):
-            cur_set = parse_line_set(self.file_path, i)
+            cur_set = self.parse_line_set(self.file_path, i)
             try:
-                next_set = parse_line_set(self.file_path, i+1)
+                next_set = self.parse_line_set(self.file_path, i+1)
                 if min(cur_set) == min(next_set):
                     # Empty Sudoku Cell
                     index_empty.extend([k for k in range(i, i+self.base**2)])
@@ -200,7 +221,7 @@ class MatrixA_Sudoku(MatrixA):
     def clean_empties(self, empties: list[int], filled_set: set[int]):
         tb_removed = []
         for index in empties:
-            cur_set = parse_line_set(self.file_path, index)
+            cur_set = self.parse_line_set(self.file_path, index)
             if len(filled_set.intersection(cur_set)) > 0:
                 # Cur empty is not compatible with the filled set. Remove it
                 tb_removed.append(index)
@@ -254,7 +275,7 @@ class MatrixA_Sudoku(MatrixA):
         
         while j<total_rows:
             curr_file_line = self.index_empty[chunk_start + j-1]  # '+1' because getline counts from 1 (first line is line 1)
-            line_set = parse_line_set(self.file_path, curr_file_line)
+            line_set = self.parse_line_set(self.file_path, curr_file_line)
             self.curr_chunk.append(line_set)
             j+=1
         
@@ -283,7 +304,7 @@ class MatrixA_Sudoku(MatrixA):
         initial_table = [empty_row.copy() for k in range(side)]
 
         for index in self.index_filled:
-            line_set = sorted(parse_line_set(self.file_path, int(index)))
+            line_set = sorted(self.parse_line_set(self.file_path, int(index)))
             cur_cell = line_set[0]
             cell_number = (line_set[1]-area) + 1 - (cur_cell // side)*side
 
@@ -297,7 +318,7 @@ class MatrixA_Sudoku(MatrixA):
         for solution in cov.cov:
             table = [[] for k in range(side)]
             for index in solution:
-                line_set = sorted(parse_line_set(self.file_path, int(index)+self.start_line))
+                line_set = sorted(self.parse_line_set(self.file_path, int(index)+self.start_line))
                 cur_cell = line_set[0]
                 cell_number = (line_set[1]-area) + 1 - (cur_cell // side)*side
                 y = cur_cell//side
