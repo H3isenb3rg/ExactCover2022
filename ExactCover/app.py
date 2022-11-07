@@ -83,6 +83,11 @@ def execute_files(root_path: str, output_root: str, results: list):
                         ec_base.matrix_a.rate,  # Sudoku -> Rate
                         ec_base.matrix_a.base   # Sudoku -> Base
                     ])
+                else:
+                    results_to_append.extend([
+                        0,
+                        0
+                    ])
                 print("    " + compare_results(ec_base, ec_plus))
 
             results.append(results_to_append)
