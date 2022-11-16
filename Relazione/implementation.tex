@@ -1,0 +1,66 @@
+\chapter{Implementazione dell'algoritmo}
+Durante la progettazione abbiamo individuato 3 punti fondamentali:
+\begin{itemize}
+    \item La generazione dell'Input
+    \item La gestione della Matrice A
+    \item La gestione del COV e del logging dei risultati
+\end{itemize}
+
+\section{Generazione dell'Input}
+Per la generazione degli input da fornire al nostro algoritmo abbiamo deciso di creare 2 script:
+\begin{itemize}
+    \item \textbf{Sudoku}: Generiamo tabelle di sudoku 4x4 e 9x9 e le riconduciamo a problemi di exact cover
+    \item \textbf{Random}: Generazione pseudo-casuale di file di input
+\end{itemize}
+
+\subsection{Generazione Sudoku}
+3 parti principali per la generazione del file di input:
+\begin{itemize}
+    \item Generazione della tabella Sudoku piena e rimozione di una certa percentuale (rate) di numeri dalla tabella
+    \item Conversione della tabella risultante in istanza di Exact Cover
+    \item Ottimizzazione dell'input generato
+\end{itemize}
+\subsubsection{Generazione tabella Sudoku}
+Per questa parte abbiamo adattato  \href{https://stackoverflow.com/questions/45471152/how-to-create-a-sudoku-puzzle-in-python}{\underline{un semplice script trovato su StackOverflow}} che ci ha fornito la generazione del sudoku sotto forma di matrice e una funzione per la stampa formattata della tabella che abbiamo poi usato per il file di input.
+\subsubsection{Conversione a istanza di Exact Cover}
+Partiti dall'idea presentata su \href{http://www.ams.org/publicoutreach/feature-column/fcarc-kanoodle}{\underline{ams.org}} ci siamo costruiti la matrice A da scrivere nel file di input che, sinteticamente, risultava in matrici di diverse dimensioni:
+\begin{itemize}
+    \item Per i Sudoku classici 9x9: 324 colonne e con numero di righe dipendente dal numero di celle vuote presenti nella tabella da convertire $\rightarrow$ ogni cella piena corrisponde ad una riga nella matrice e ogni cella vuota a 9 righe
+    \item Per i Sudoku ridotti 4x4: 64 colonne e per il numero di righe come per il Sudoku classico ma ogni cella vuota corrisponde a 4 righe nella matrice invece di 9
+\end{itemize}
+
+\subsubsection{Ottimizzazione della matrice}
+Operazione svolta non nel momento della generazione del file ma al lancio della risoluzione del problema di Exact Cover.\\
+Sapendo che l'input si riferisce ad un'istanza di Sudoku abbiamo cercato di ottimizzare ulteriormente la matrice:
+\begin{itemize}
+    \item Sapendo che le celle piene del Sudoku sono fisse e non possono essere cambiate abbiamo considerato l'unione di tutte le righe della matrice che le rappresentano come un'unica riga passando quindi da $k$ righe per rappresentare le $k$ celle piene ad un'unica riga che rappresenta tutte le celle piene.
+    \item Inoltre abbiamo ridotto ulteriormente la matrice eliminando tutte le righe generate da celle vuote non compatibili con la nuova riga rappresentante le celle piene
+    \item Si proseguirà quindi risolvendo l'Exact Cover su questa nuova matrice ridotta
+\end{itemize}
+
+\subsection{Generazione Random}
+Il generatore di input casuali genera direttamente la matrice A, di dimensioni decise dall’utente e indicate nel file di configurazione, andando a riempiere in maniera completamente casuale ogni elemento della matrice pari a 0 oppure a 1.
+Successivamente viene svolto un controllo sulle colonne e viene avvisato l’utente se una colonna ha tutti gli elementi a 0, rendendo il problema irrisolvibile.
+\subsubsection{Garanzia della presenza di una soluzione}
+Se l’utente ha selezionato l’opzione per garantire sempre almeno una soluzione, il generatore va modificare deterministicamente la matrice sostituendo un numero di righe pari al numero di colonne con righe che hanno tutti 0 tranne un elemento pari ad 1. In questo modo esiste almeno la soluzione formata dall’unione di tutte le righe con un solo 1. Le righe da sostituire vengono scelte equispaziate tra di loro per non privilegiare o svantaggiare il momento (inteso come numero di iterazione dell’algoritmo) del ritrovamento di quella soluzione.
+
+
+\section{Gestione Matrice A}
+Abbiamo seguito fondamentalmente 2 idee per la memorizzazione e la gestione della Matrice A letta da input:
+\begin{itemize}
+    \item Considerarla come una lista di set di indici
+    \item Considerare ogni riga della matrice come un intero binario
+\end{itemize}
+In entrambi i casi la matrice viene caricata in memoria di lavoro dinamicamente a chunck di dimensioni fisse ridotte in modo da evitare il caricamento dell'intera matrice che potrebbe essere di dimensioni troppo elevate
+
+\subsection{Lista di set di indici}
+Matrice A letta da input viene convertita in una List di Set dove ogni Set corrisponde ad una riga della matrice e contiene, per la riga alla quale si riferisce, le posizioni degli elementi uguali a '1'.\\
+In questo modo si riesce a ridurre di molto le dimensioni, per esempio nel caso di input generato da Sudoku 9x9 si passa da set di 324 elementi a set di 4 elementi.\\
+Questa interpretazione si è poi rivelata la migliore ed è stata quindi usata per l'implementazione finale.
+
+\subsection{Interpretazione Binaria}
+Ogni riga della Matrice A letta dal file di input(sequenza di '0' e '1') viene considerata come un intero binario e memorizzato come tale ottenendo quindi una List di Int.\\
+Successivamente tutte le operazioni sui Set necessarie per lo svolgimento dell'algoritmo di Exact Cover sono state convertite in operazioni bitwise tra numeri binari.
+
+\section{COV e Logging}
+Il COV è stato realizzato come un oggetto che si occupa della gestione della memorizzazione delle coperture trovate durante l'esecuzione e della loro immediata scrittura nel file di output ed, inoltre, della scrittura di informazioni e commenti importanti relativi all'esecuzione corrente.

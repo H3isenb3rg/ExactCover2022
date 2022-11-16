@@ -1,0 +1,150 @@
+\chapter{Descrizione del progetto}
+
+\section{Il Problema}
+
+\subsection{Input}
+Una \textbf{collezione finita N di insiemi finiti} (distinti) dove gli elementi di ogni insieme appartengono al dominio M (si assume che M sia l’unione di tutti gli insiemi della collezione N)
+
+\subsection{Output}
+Tutte le \textbf{partizioni} (o \textbf{coperture esatte}) di M dove ciascuna parte è un insieme della collezione N
+
+\textbf{Partizione di M} (vincolata da N):
+\begin{itemize}
+    \item (sotto)insieme della collezione N costituito da \underline{insiemi tutti reciprocamente disgiunti} e tali che \underline{la loro unione è M}
+\end{itemize}
+
+\subsection{Esempio}
+\newcommand\xxx{\par\hangindent1em\makebox[1em][l]{}}
+\begin{tabular}{p{0.15\textwidth}p{0.5\textwidth}lp{2in}}\toprule
+    N & 
+        \xxx \{b3\}
+        \xxx \{a1, a2, b4\}
+        \xxx \{a2, b3, b4, a5\}  
+        \xxx \{a5\}  
+        \xxx \{a1, a2, b3\}  
+        \xxx \{b4, a5\} \\
+    \addlinespace
+    M & 
+        \xxx \{a1,a2,b3,b4,a5\}\\
+    \addlinespace
+    Partizioni & 
+        \xxx \{\{b3\}, \{a1,a2,b4\}, \{a5\}\}  
+        \xxx \{\{a1,a2,b3\}, \{b4,a5\}\}\\
+    \\\bottomrule
+\end{tabular}
+
+\section{Componenti}
+
+\subsection{Matrice d'Ingresso}
+Ogni elemento di M è univocamente identificato da un indice intero appartenente all’intervallo [1 .. |M|]
+\begin{align*}
+ & a1 \rightarrow 1 \\
+ & a2 \rightarrow 2 \\
+ & b3 \rightarrow 3 \\
+ & b4 \rightarrow 4 \\
+ & a5 \rightarrow 5 \\
+\end{align*}
+Analogamente ogni elemento di N è univocamente identificato da un indice intero appartenente all’intervallo [1 .. |N|]
+\begin{align*}
+     & \{b3\} \rightarrow 1 \\
+     & \{a1,a2,b4\} \rightarrow 2 \\ 
+     & \{a2,b3,b4,a5\} \rightarrow 3 \\ 
+     & \{a5\}  \rightarrow 4 \\
+     & \{a1,a2,b3\} \rightarrow 5 \\
+     & \{b4,a5\} \rightarrow 6 
+\end{align*}
+I dati d’ingresso del problema possono essere rappresentati come una matrice $A_{|N|,|M|}$, dove il valore del componente ai,j della matrice è 1 se l’elemento (di M) di indice j appartiene all’insieme (in N) di indice i, 0 altrimenti.\\
+\underline{Precisazione}: un insieme vuoto può comparire in ogni partizione, tuttavia è preferibile ometterlo. Pertanto, se un insieme delle collezione N fosse accidentalmente vuoto, esso non dovrà comparire in nessuna soluzione del problema Exact Cover.
+\[
+\begin{blockarray}{cccccc}
+     & a1 & a2 & b3 & b4 & a5 \\
+     & 1 & 2 & 3 & 4 & 5 \\
+    \begin{block}{c[ccccc]}
+        1 & 0 & 0 & 1 & 0 & 0\bigstrut[t] \\
+        2 & 1 & 1 & 0 & 1 & 0 \\
+        3 & 0 & 1 & 1 & 1 & 1 \\
+        4 & 0 & 0 & 0 & 0 & 1 \\
+        5 & 1 & 1 & 1 & 0 & 0 \\
+        6 & 0 & 0 & 0 & 1 & 1\bigstrut[b]\\
+    \end{block}
+\end{blockarray}\vspace*{-1.25\baselineskip}
+\]
+\\
+D’ora innanzi si farà riferimento all’insieme i-mo $(1 \leq i \leq |N|)$ della collezione N come A[i]
+
+\subsection{COV}
+Insieme (denominato COV) di tutte le partizioni trovate, dove ciascuna partizione è rappresentata da un insieme di identificatori, uno per ciascun insieme appartenente a N che fa parte della partizione\\
+\begin{tabular}{p{0.15\textwidth}p{0.5\textwidth}lp{2in}}
+    \toprule
+    N & 
+        \xxx 1 $\rightarrow$ \{b3\}
+        \xxx 2 $\rightarrow$ \{a1, a2, b4\}
+        \xxx 3 $\rightarrow$ \{a2, b3, b4, a5\}  
+        \xxx 4 $\rightarrow$ \{a5\}  
+        \xxx 5 $\rightarrow$ \{a1, a2, b3\}  
+        \xxx 6 $\rightarrow$ \{b4, a5\} \\
+    \addlinespace
+    Partizioni & 
+        \xxx \{\{b3\}, \{a1,a2,b4\}, \{a5\}\}  
+        \xxx \{\{a1,a2,b3\}, \{b4,a5\}\}\\
+    \bottomrule
+    \textbf{COV} &
+        \xxx \{1, 2, 4\}  
+        \xxx \{5, 6\}\\
+    \bottomrule
+\end{tabular}
+
+\subsection{Matrice di Compatibilità}
+L’approccio proposto fa ampio uso del concetto di matrice di compatibilità, che è relativa agli insiemi della collezione distinti da $\varnothing$ e $M$
+
+\paragraph{Matrice di Compatibilità}
+Si tratta di una matrice simmetrica, indicata con $B$, in cui $b_{i,j}$ assume:
+\begin{itemize}
+    \item Il valore 1 se:
+    \begin{itemize}
+        \item $i\neq j$
+        \item $A[i] \cap A[j] = \varnothing$
+        \item $A[i] \cup A[j] \neq M$
+    \end{itemize}
+    \item 0 altrimenti
+\end{itemize}
+
+Della matrice B basta riempire le celle $b_{i,j}$ in cui $j>i$ (La matrice è simmetrica).\\
+$A[i]$ e $A[j]$ (con $j>i$) si dicono insiemi compatibili se $b_{i,j}=1$ (nel senso che ad essi si possono aggregare ulteriori insiemi al fine di formare delle partizioni)
+
+\begin{center}
+    \begin{tabular}{p{0.35\textwidth}p{0.3\textwidth}lp{2in}}
+        \begin{center}Matrice di Ingresso A\end{center} & \begin{center}Matrice di Compatibilità B\end{center}\\
+        \[
+        \begin{blockarray}{cccccc}
+             & a1 & a2 & b3 & b4 & a5 \\
+             & 1 & 2 & 3 & 4 & 5 \\
+            \begin{block}{c[ccccc]}
+                1 & 0 & 0 & 1 & 0 & 0\bigstrut[t] \\
+                2 & 1 & 1 & 0 & 1 & 0 \\
+                3 & 0 & 1 & 1 & 1 & 1 \\
+                4 & 0 & 0 & 0 & 0 & 1 \\
+                5 & 1 & 1 & 1 & 0 & 0 \\
+                6 & 0 & 0 & 0 & 1 & 1\bigstrut[b]\\
+            \end{block}
+        \end{blockarray}\vspace*{-1.25\baselineskip}
+        \]
+        
+        & 
+        \[
+        \begin{blockarray}{ccccccc}
+             & 1 & 2 & 3 & 4 & 5 & 6\\
+            \begin{block}{c[cccccc]}
+                1 & 0 & 1 & 0 & 1 & 0 & 1\bigstrut[t] \\
+                2 & 1 & 0 & 0 & 1 & 0 & 0\\
+                3 & 0 & 0 & 0 & 0 & 0 & 0\\
+                4 & 1 & 1 & 0 & 0 & 1 & 0\\
+                5 & 0 & 0 & 0 & 1 & 0 & 0\\
+                6 & 1 & 0 & 0 & 0 & 0 & 0\bigstrut[b]\\
+            \end{block}
+        \end{blockarray}\vspace*{-1.25\baselineskip}
+        \] \\
+    \end{tabular}
+\end{center}
+
+\input{algoritmo}

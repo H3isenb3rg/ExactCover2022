@@ -1,0 +1,88 @@
+\documentclass[a4paper,12pt,oneside]{book} % Formato documento: foglio a4, font size 12, solo fronte
+\usepackage{csquotes}
+\usepackage[italian]{babel}
+\usepackage[lmargin=2cm,rmargin=2cm,tmargin=2.5cm,bmargin=2cm]{geometry} % Bordi pagina come da formato tesi UNIBS
+\linespread{1.5} % Interlinea
+\setlength{\parindent}{0pt} % No spazio prima dei paragrafi
+\setlength{\parskip}{1em}
+\setlength{\headheight}{15pt}
+\addtolength{\topmargin}{-2.5pt}
+
+
+\usepackage[linesnumbered, ruled, noend]{algorithm2e}
+\usepackage{longtable}
+\usepackage{blkarray, bigstrut, amssymb}
+\usepackage{graphicx} % Per poter inserire immagini
+\usepackage{float} % Per controllare il posizionamento di immagini e tabelle
+\usepackage{amsmath} % Per inserire equazioni
+\usepackage{mathtools} % Per la generazione della graffa destra
+\usepackage[hidelinks]{hyperref} % Per inserire URL
+\usepackage{xurl} % Per consentire agli URL di spezzarsi a capo
+\usepackage{enumitem} % Per poter inserire liste
+\usepackage{siunitx} % Necessario per usare \setitemize
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
+\setenumerate{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
+\usepackage{booktabs} % Migliora qualità delle tabelle
+\usepackage{multirow}
+\usepackage{svg} % Inserimento di immagini SVG
+
+%\usepackage{todonotes}
+%\presetkeys{todonotes}{inline}{}
+
+\usepackage[titles]{tocloft}
+\setlength{\cftbeforechapskip}{6pt}
+
+\usepackage[backend=biber,sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
+\addbibresource{refs.bib} % File contenente la bibliografia
+
+\usepackage{fontspec}
+\setsansfont{Courier New}
+\usepackage{titlesec} % Per modificare il formato dei capitoli
+\titleformat{\chapter}[hang]{\normalfont\Huge\bfseries}{\thechapter.}{8pt}{\Huge\bfseries}
+\titlespacing*{\chapter}{0pt}{-40pt}{5pt}
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+
+
+\usepackage{fancyhdr} % Per modificare l'intestazione delle pagine
+\pagestyle{fancy} % Customizzazione testata e piè di pagina
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+\fancyhf{}
+\fancyhead[L]{\thechapter. \leftmark}
+\fancyfoot[C]{\thepage}
+
+
+\title{Exact Cover 2022}
+\author{Matteo Beatrice, Alessandro Gaudenzi}
+\date{Settembre 2022}
+
+
+%------------------Document----------------------------
+
+\begin{document}
+%-------------------------TitlePage------------------------
+\input{title}
+%-------------------------Content------------------------
+\hyphenpenalty=2000 % Rende meno probabile lo spezzamento delle parole a capo
+
+\frontmatter
+
+\pagenumbering{Roman} % Numeri romani maiuscoli per numero pagina per indice e intro
+
+\tableofcontents
+
+\mainmatter
+
+\input{description}
+
+\input{implementation}
+
+\input{inputs}
+
+\input{results}
+
+\input{conclusion}
+
+\input{appendix}
+
+\end{document}

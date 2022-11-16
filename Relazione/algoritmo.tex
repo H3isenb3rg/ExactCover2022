@@ -1,0 +1,165 @@
+\section{Algoritmo}
+\subsection{Principi}
+L’algoritmo risolvente proposto (in due versioni) sfrutta l’ordine degli insiemi entro la collezione N (detto \underline{ordine lessicografico}).\\
+Esso produce incrementalmente la matrice di compatibilità e intanto analizza via via gli aggregati di insiemi della collezione N la compatibilità reciproca dei quali sia già stata appurata.
+\begin{itemize}
+    \item Nessun aggregato contiene come elemento un insieme vuoto
+    \item Nessun aggregato contiene come elemento un insieme coincidente con M
+\end{itemize}
+L’operato dell’algoritmo può essere descritto in termini di \underline{\textbf{esplorazione di alberi}}, dove un nodo d’albero rappresenta un aggregato di uno o più insiemi della collezione.
+\begin{itemize}
+    \item Ciascun albero ha per radice un insieme distinto della collezione e contiene tutti e soli gli aggregati costituiti da tale insieme e da insiemi che lo precedono secondo l’ordine lessicografico degli insiemi.
+    \item A ogni nodo d’albero è associato l’insieme degli identificatori degli insiemi che appartengono all’aggregato a cui il nodo si riferisce
+    \item A ciascuna radice è associato un insieme (di identificatori) singoletto $\{i\}$, $1 \leq i \leq |N|$, dove $A[i]$ non è l’insieme vuoto né coincide con M: l’albero avente tale radice si dice «\underline{radicato in i}»
+    \item Gli alberi vengono visitati per valori crescenti degli identificatori delle loro radici (ordine lessicografico)
+\end{itemize}
+
+\subsection{Visita degli Aggregati}
+\paragraph{Due insiemi.}
+Durante la visita dell’albero radicato in $i$ vengono inizializzate le caselle della matrice di compatibilità della colonna relativa a $i$ (prima la casella $B[1,i]$, poi $B[2,i]$ ecc. fino ad assegnare un valore alla casella $B[i-1,i]$): questo implica \textbf{la visita di tutti i nodi corrispondenti ad aggregati di cardinalità 2}
+\paragraph{Tre o più insiemi.}
+Ciascun nodo corrispondente a un aggregato di cardinalità $>2$ viene invece visitato \textbf{solo se gli insiemi che lo costituiscono sono compatibili a due a due}, secondo quanto riportato nella matrice B
+\paragraph{Sotto-colonne}
+Nello pseudocodice, con $B[1...i, j]$ si indica la sotto collezione di N costituita dagli insiemi compatibili con l’insieme $A[j]$ i cui indici vanno da 1 a $i (j>i)$
+
+\subsection{Ordine di Visita e Analisi}
+\begin{figure}[H]
+  \centering
+  \includesvg[inkscapelatex=false, scale=0.60]{figures/Tree.svg}
+  \caption{Esempio Albero dell'Algoritmo}
+\end{figure}
+Vicino ai nodi è riportato l’ordine di visita dell’albero radicato \textbf{nell’insieme identificato da 5}, assumendo che gli insiemi non vuoti né coincidenti con M che lo precedono nella collezione N siano quelli aventi gli identificatori da 1 a 4 e che l’ordine entro la collezione rispecchi l’ordine dei valori interi.
+\begin{itemize}
+    \item L’ordine di visita illustrato garantisce che le caselle $B[1,5]$, $B[2,5]$, $B[3,5]$ e $B[4,5]$ vengano inizializzate nell’ordine indicato
+    \item Dopo che sono state inizializzate le caselle $B[1,5]$ e $B[2,5]$ è possibile analizzare l’aggregato 521 perché le compatibilità degli aggregati 51 e 52 sono note, così come quella dell’aggregato 21, poiché l’albero radicato in 2 è stato visitato prima di quello radicato in 5
+    \item Dopo che sono state inizializzate le caselle $B[1,5]$, $B[2,5]$ e $B[3,5]$ è possibile analizzare gli aggregati 531 e 532 perché le compatibilità degli aggregati 51, 52 e 53 sono note, così come quelle degli aggregati 31 e 32
+\end{itemize}
+\begin{figure}[H]
+  \centering
+  \includesvg[inkscapelatex=false, scale=0.60]{figures/Tree2.svg}
+  \caption{Esempio Albero dell'Algoritmo con nodi scartati}
+\end{figure}
+\begin{itemize}
+    \item Se la visita di un nodo del primo livello di un albero (cioè l’aggregato $ij$ , figlio della radice $i$) evidenzia che gli insiemi $A[i]$ e $A[j]$ hanno \textbf{un'intersezione non vuota} oppure che \textbf{la loro unione coincide con M}, i discendenti del nodo $ij$ non vengono esplorati così come non vengono esplorati gli aggregati che contengono sia $i$ sia $j$.
+    \begin{itemize}
+        \item Per Esempio se l’insieme 5 ha una intersezione non vuota con l’insieme 3 oppure se l’unione degli insiemi 5 e 3 coincide con M, i nodi discendenti del nodo 53 non vengono visitati così come non vengono visitati i nodi appartenenti all’intero sottoalbero radicato in 543, come evidenziato dal nuovo contorno di tali nodi
+    \end{itemize}
+    \item Se la visita di un nodo appartenente a un livello successivo al primo evidenzia che l’aggregato rappresentato da tale nodo \textbf{è una partizione}, i discendenti di tale nodo non vengono esplorati.
+    \begin{itemize}
+        \item Per Esempio se l’aggregato 542 è una partizione, i suoi nodi discendenti (in questo caso uno solo) non vengono visitati
+    \end{itemize}
+\end{itemize}
+
+\newpage
+\subsection{Algoritmo Base - Pseudocodice}
+\IncMargin{1em}
+\begin{algorithm}
+    \DontPrintSemicolon
+    \SetKwArray{A}{A}\SetKwData{i}{i}\SetKwArray{Rows}{rows}
+    \SetKwData{SetM}{M}\SetKwData{Cov}{COV}\SetKwArray{B}{B}
+    \SetKwData{j}{j}\SetKwData{U}{U}\SetKwData{I}{I}\SetKwData{Itemp}{Itemp}
+    \SetKwData{Utemp}{Utemp}\SetKwData{Inter}{Inter}\SetKwData{VarK}{k}
+    \SetKwData{InterTemp}{Intertemp}
+    \SetKwFunction{Esplora}{Esplora}
+    \BlankLine
+    \SetKwProg{Fn}{procedure}{}{}
+    \Fn{EC(\A)}{
+        \For{\i$\leftarrow1$ \KwTo \Rows{\A}}{
+            \lIf(\tcc*[f]{\textbf{break} termina iterazione $i$-esima}){\A{\i}$==\varnothing$}{
+                \textbf{break}
+            }
+            \lIf(\tcc*[f]{\Cov variabile globale}){\A{\i}$==$\SetM}{
+                Put $\{i\}$ in \Cov,
+                \textbf{break}
+            }
+            In \B aggiungere la colonna relativa ad \i\;
+            \For{\j$\leftarrow1$ \KwTo \i$-1$}{
+                \eIf{\A{\j}$\cap$\A{\i}$\neq\varnothing$}{
+                    \B{\j,\i}$\leftarrow0$
+                }{
+                    \I$\leftarrow\{$\i,\j$\}$, \U$\leftarrow$\A{\i}$\cup$\A{\j}\;
+                    \eIf{\U$==$\SetM}{
+                        inserire \I in \Cov, \B{\j,\i}$\leftarrow0$
+                    }{
+                        \B{\j,\i}$\leftarrow1$, \Inter $\leftarrow$ \B{$1...$\j$-1$, \i}$\cap$\B{$1...$\j$-1$, \j}\;
+                        \lIf{\Inter$\neq\varnothing$}{
+                            \Esplora{\I, \U, \Inter}
+                        }
+                    }
+                }
+            }
+        }
+    }
+    \Fn{Esplora(\I, \U, \Inter)}{
+        \ForAll(\tcc*[f]{Ordine lessicografico del valore di \VarK}){\VarK$\in $\Inter }{
+            \Itemp$\leftarrow$\I$\cup\{$\VarK$\}$, 
+            \Utemp$\leftarrow$\U$\cup$\A{\VarK}\;
+            \eIf{\Utemp$==$\SetM}{
+                inserire \Itemp in \Cov
+            }{
+                \InterTemp $\leftarrow$ \Inter $\cap$ \B{$1...$\VarK$-1$,\VarK}\;
+                \lIf{\InterTemp$\neq\varnothing$}{\Esplora{\I, \U, \Inter}}
+            }
+        }
+    }
+    \caption{Algoritmo Base}\label{base_alg}
+\end{algorithm}\DecMargin{1em}
+
+\newpage
+\subsection{Algoritmo Plus - Pseudocodice}
+\IncMargin{1em}
+\begin{algorithm}
+    \DontPrintSemicolon
+    \SetKwArray{A}{A}\SetKwArray{Rows}{rows}\SetKwArray{B}{B}
+    \SetKwArray{Card}{card}
+    \SetKwData{SetM}{M}\SetKwData{Cov}{COV}\SetKwData{i}{i}
+    \SetKwData{j}{j}\SetKwData{CardU}{cardU}\SetKwData{I}{I}\SetKwData{Itemp}{Itemp}
+    \SetKwData{Utemp}{Utemp}\SetKwData{Inter}{Inter}\SetKwData{VarK}{k}
+    \SetKwData{CardTemp}{cardtemp}
+    \SetKwData{InterTemp}{Intertemp}
+    \SetKwFunction{Esplora}{Esplora$^+$}
+    \BlankLine
+    \SetKwProg{Fn}{procedure}{}{}
+    \Fn{EC$^+$(\A)}{
+        \For{\i$\leftarrow1$ \KwTo \Rows{\A}}{
+            \lIf(\tcc*[f]{\textbf{break} termina iterazione $i$-esima}){\A{\i}$==\varnothing$}{
+                \textbf{break}
+            }
+            \lIf(\tcc*[f]{\Cov variabile globale}){\A{\i}$==$\SetM}{
+                Put $\{i\}$ in \Cov,
+                \textbf{break}
+            }
+            \Card{\i}$\leftarrow|$\A{\i}$|$\;
+            In \B aggiungere la colonna relativa ad \i\;
+            \For{\j$\leftarrow1$ \KwTo \i$-1$}{
+                \eIf{\A{\j}$\cap$\A{\i}$\neq\varnothing$}{
+                    \B{\j,\i}$\leftarrow0$
+                }{
+                    \I$\leftarrow\{$\i,\j$\}$, 
+                    \CardU$\leftarrow$\Card{\i}$+$\Card{\j}\;
+                    \eIf{\CardU$==|$\SetM$|$}{
+                        inserire \I in \Cov, \B{\j,\i}$\leftarrow0$
+                    }{
+                        \B{\j,\i}$\leftarrow1$, \Inter $\leftarrow$ \B{$1...$\j$-1$, \i}$\cap$\B{$1...$\j$-1$, \j}\;
+                        \lIf{\Inter$\neq\varnothing$}{
+                            \Esplora{\I, \CardU, \Inter}
+                        }
+                    }
+                }
+            }
+        }
+    }
+    \Fn{Esplora$^+$(\I, \CardU, \Inter)}{
+        \ForAll(\tcc*[f]{Ordine lessicografico del valore di \VarK}){\VarK$\in $\Inter }{
+            \Itemp$\leftarrow$\I$\cup\{$\VarK$\}$, 
+            \CardTemp$\leftarrow$\CardU$+|$\A{\VarK}$|$\;
+            \eIf{\CardTemp$==|$\SetM$|$}{
+                inserire \Itemp in \Cov
+            }{
+                \InterTemp $\leftarrow$ \Inter $\cap$ \B{$1...$\VarK$-1$,\VarK}\;
+                \lIf{\InterTemp$\neq\varnothing$}{\Esplora{\I, \CardTemp, \Inter}}
+            }
+        }
+    }
+    \caption{Algoritmo Plus}\label{plus_alg}
+\end{algorithm}\DecMargin{1em}
