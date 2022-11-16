@@ -1,4 +1,4 @@
-import app.sudoku_gen as sudoku_gen
+import InputGenerator.sudoku_gen as sudoku_gen
 
 def generate_full_sudoku_board(base):
     return sudoku_gen.Sudoku(base=base).full_board
@@ -110,7 +110,10 @@ def test_sudoku_rules():
 
     for base in bases:
         curr_board = generate_full_sudoku_board(base)
-        assert rule1(curr_board)
-        assert rule2(curr_board)
-        assert rule3(curr_board)
-        assert rule4(curr_board, base)
+        assert_rules(curr_board, base)
+
+def assert_rules(board, base):
+    assert rule1(board)
+    assert rule2(board)
+    assert rule3(board)
+    assert rule4(board, base)

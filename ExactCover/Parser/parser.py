@@ -1,3 +1,5 @@
+# TODO: togliere salvataggio intera matrice in memoria 
+
 def parse_file(input_file: str):
     """
     Parse a file into a bi-dimensional matrix
@@ -8,19 +10,19 @@ def parse_file(input_file: str):
     """
     file = open(input_file, 'r', encoding='UTF-8')
     lines = file.readlines()
-    output_matrix = []
+    
     m = set()
     for line in lines:
         if line[0] != ';':
             line = clean(line)
             line_set = set(index for index, element in enumerate(line) if element == '1')
-            for i, element in enumerate(line_set):
-                m.add(element)
-            output_matrix.append(line_set)
+            m = m.union(line_set)
             count = len(line)
-    assert void_columns(count, output_matrix), "There is at least one element of M absent in every set of N, " \
-                                               "impossible to compute COV "
-    return output_matrix, m
+
+    if count != len(m):
+        raise Exception(f"{count-len(m)} elements are absent in every set of N, can't compute COV")
+
+    return m
 
 
 def clean(line: str):
